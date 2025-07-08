@@ -11,6 +11,8 @@
 	<form action="register" method="POST">
 		<label>아이디   :<input type="text" name="username" /> </label>
 		<label>비밀번호 :<input type="password" name="pwd" /></label>
+		<label>이메일   :<input type="email" name="email" /> </label>
+		<label>닉네임 :<input type="text" name="nickname" /></label>
 		<button type="submit">로그인</button>
 	</form>
 </body>

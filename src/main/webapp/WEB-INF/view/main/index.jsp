@@ -18,13 +18,36 @@
 	
 		<c:choose>
 			<%-- Case 1 : 사용자가 로그인하여 세션에 loggedInUser정보가 존재할 때 (로그인된 경우) --%>
-			<form action="login" method="post">
-				<label>아이디: <input type="text" name="username"></label>
-				<label>비밀번호: <input type="password" name="password"></label>
-				<button type="submit">로그인</button>
+			<c:when test="${not empty sessionScope.loggedInUser}">
+				<h2> 안녕하세요, <c:out value="${sessionScope.loggedInUser}"></c:out>님 </h2>
+				<p>환영합니다. 여기에 로그인 후 보여줄 콘텐츠를 작성하세요.</p>
+				
+				<div>
+					<a href="user/profile" class="btn btn-info">마이 페이지</a>
+					<a href="logout" class="btn btn-warnindg">로그아웃 </a>
+				</div>
+				
+			</c:when>
 			
-			</form>
-		<a href="/register">회원가입</a>
+			<%-- Case 2: 사용자가 로그인하지 않았거나 로그인에 실패하여 세션이 없는 경우 --%>
+			<c:otherwise>
+				<c:if test="${not empty requestScope.message}">
+					<p style="color: red;">${requestScope.message}</p>
+				</c:if>
+				
+				<form action="login" method="post">
+                    <div>
+                        <label for="username">아이디:</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                    <div>
+                        <label for="password">비밀번호:</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <button type="submit">로그인</button>
+				</form>
+				<p>아직 회원이 아니신가요? <a href="/register">회원가입</a></p>
+			</c:otherwise>
 		
 		</c:choose>
 		

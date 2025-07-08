@@ -14,62 +14,73 @@ public class UserRepository {
 	private String dbUser = "root";
 	private String dbPassword = "1234";
 	
-	public boolean saveUser(String username, String password) {
-		String sql = "INSERT INTO user (username, password) VALUES(?, ?)";
+	public UserRepository() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
+		}catch (ClassNotFoundException e) {
+            System.err.println("MySQL JDBC Driver not found. Make sure mysql-connector-j-8.0.x.jar is in WEB-INF/lib.");
+            e.printStackTrace();
+            throw new RuntimeException("Failed to load JDBC driver", e);
+        }
+	}
+	
+	public boolean saveUser(String username, String password, String email, String nickname) {
+		String sql = "INSERT INTO user (username, password, email, nickname) VALUES(?, ?, ?, ?)";
+		try {
 			
 			Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, username);
 			pstmt.setString(2, password);
+			pstmt.setString(3, email);
+			pstmt.setString(4, nickname);
 			int rowsAffected = pstmt.executeUpdate();
 			return rowsAffected > 0;
 		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 		
 		return false;
 	}
 	
-	public boolean findByUsernameAndPassword(String username, String password) {
-        String sql = "SELECT COUNT(*) FROM user WHERE username = ? AND password = ?";
+	public int findByUsernameAndPassword(String username, String password) {
+        String sql = "SELECT id FROM user WHERE username = ? AND password = ?";
         try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, username);
             pstmt.setString(2, password);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getInt(1) > 0;
+                    return rs.getInt("id");
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
+        return 0;
     }
 	
 	
 	public User findUserByUserName(String username) {
 		String sql = "SELECT * FROM user WHERE username = ?";
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
+		try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
+			PreparedStatement pstmt = conn.prepareStatement(sql);){		
 			
-			Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
-			PreparedStatement pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, username);
 			
-			ResultSet rs = pstmt.executeQuery();
 			
-			String resultUsername = rs.getString("username");
-			String resultPassword = rs.getString("password");
-			
-			User user = new User(resultUsername, resultPassword);
-			
-			
-			return user;
+			try(ResultSet rs = pstmt.executeQuery();){
+				if(rs.next()) {
+					String resultUsername = rs.getString("username");
+					String resultPassword = rs.getString("password");
+					String resultEmail = rs.getString("email");
+					String resultNickname = rs.getString("nickname");
+					User user = new User(resultUsername, resultPassword, resultEmail, resultNickname);
+					return user;
+				} else {
+					return null;
+				}
+			}	
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -78,6 +89,33 @@ public class UserRepository {
 		} 
 		
 		return null;
+		
+	}
+	
+	public boolean updateUser(int userId, User user) {
+		String sql = "UPDATE user SET username = ?, password = ?, email=?, nickname=? " +
+				"where id=?";
+		
+		int result = 0;
+		
+		try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
+			PreparedStatement pstmt = conn.prepareStatement(sql);){		
+			
+			pstmt.setString(1, user.getUsername());
+			pstmt.setString(2, user.getPassword());
+			pstmt.setString(3, user.getEmail());
+			pstmt.setString(4, user.getNickname());
+			pstmt.setInt(5, userId);
+			
+			result = pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+		
+		return result > 0;
 		
 	}
 	

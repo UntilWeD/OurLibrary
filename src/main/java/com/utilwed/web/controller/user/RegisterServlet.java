@@ -34,8 +34,10 @@ public class RegisterServlet extends HttpServlet{
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String username = request.getParameter("username");
 		String password = request.getParameter("pwd");
+		String email = request.getParameter("email");
+		String nickname = request.getParameter("nickname");
 		
-		int result = userService.registerUser(username, password);
+		int result = userService.registerUser(username, password, email, nickname);
 		
 		if(result > 0) {
 			request.getRequestDispatcher("/WEB-INF/view/main/index.jsp").forward(request, response);
