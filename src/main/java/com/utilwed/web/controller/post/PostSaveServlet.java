@@ -14,7 +14,7 @@ import com.utilwed.web.repository.PostRepository;
 import com.utilwed.web.service.post.PostService;
 
 @WebServlet("/category/list/post/save")
-public class PostServlet extends HttpServlet{
+public class PostSaveServlet extends HttpServlet{
 	
 	private PostService postService;
 	
@@ -38,7 +38,7 @@ public class PostServlet extends HttpServlet{
 		HttpSession session = request.getSession(false);
 		String title = request.getParameter("title");
 		String content = request.getParameter("content");
-		String nickname = request.getParameter("nickname");
+		String nickname = (String) session.getAttribute("loggedInUser");
 		int categoryId = Integer.parseInt(request.getParameter("categoryId"));
 		int userId = (int) session.getAttribute("userId");
 
@@ -53,7 +53,7 @@ public class PostServlet extends HttpServlet{
 		int newPostId = postService.savePost(post);
 		
 		if(newPostId > 0) {
-			response.sendRedirect("/category/list/post?cid= + " + categoryId + "&pid=" + newPostId);
+			response.sendRedirect("/category/list/post?cid=" + categoryId + "&pid=" + newPostId);
 		} else {
 			response.sendRedirect("/category/list/post");
 		}

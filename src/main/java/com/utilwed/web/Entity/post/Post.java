@@ -1,13 +1,15 @@
 package com.utilwed.web.Entity.post;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 public class Post {
+	private int id;
 	private String title;
 	private String content;
 	private String nickname;
-	private LocalDateTime createdAt;
-	private LocalDateTime updatedAt;
+	private Date createdAt;
+	private Date updatedAt;
 	private int likeCount;
 	private int dislikeCount;
 	private int view;
@@ -31,13 +33,16 @@ public class Post {
 	}
 
 
-	public Post(String title, String content, String nickname, LocalDateTime createdAt, LocalDateTime updatedAt,
-			int likeCount, int dislikeCount, int view, int userId, int categoryId) {
+	public Post(int id, String title, String content, String nickname, Date createdAt, Date updatedAt, int likeCount,
+			int dislikeCount, int view, int userId, int categoryId) {
+		this.id = id;
 		this.title = title;
 		this.content = content;
 		this.nickname = nickname;
+		
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
+		
 		this.likeCount = likeCount;
 		this.dislikeCount = dislikeCount;
 		this.view = view;
@@ -46,11 +51,15 @@ public class Post {
 	}
 	
 	
-	@Override
-	public String toString() {
-		return "Post [title=" + title + ", content=" + content + ", nickname=" + nickname + ", createdAt=" + createdAt
-				+ ", updatedAt=" + updatedAt + ", likeCount=" + likeCount + ", dislikeCount=" + dislikeCount + ", view="
-				+ view + ", userId=" + userId + ", categoryId=" + categoryId + "]";
+
+
+	public int getId() {
+		return id;
+	}
+
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 
@@ -84,22 +93,22 @@ public class Post {
 	}
 
 
-	public LocalDateTime getCreatedAt() {
+	public Date getCreatedAt() {
 		return createdAt;
 	}
 
 
-	public void setCreatedAt(LocalDateTime createdAt) {
+	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
 	}
 
 
-	public LocalDateTime getUpdatedAt() {
+	public Date getUpdatedAt() {
 		return updatedAt;
 	}
 
 
-	public void setUpdatedAt(LocalDateTime updatedAt) {
+	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
 	}
 
@@ -154,6 +163,8 @@ public class Post {
 	}
 
 
+
+	
 	
 	
 	

@@ -17,10 +17,7 @@
 
         <label for="content">내용:</label><br>
         <textarea id="content" name="content" rows="10" cols="50" required></textarea><br><br>
-
-        <label for="nickname">닉네임:</label><br>
-        <input type="text" id="nickname" name="nickname" required /><br><br>		
-	
+        
 		<button type="submit">작성 완료</button>
 	</form>
 </body>

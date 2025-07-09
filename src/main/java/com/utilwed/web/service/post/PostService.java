@@ -1,5 +1,9 @@
 package com.utilwed.web.service.post;
 
+
+
+import java.util.List;
+
 import com.utilwed.web.Entity.post.Post;
 import com.utilwed.web.repository.PostRepository;
 
@@ -15,6 +19,16 @@ public class PostService {
 		return postRepository.savePost(post);
 	}
 	
+	public List<Post> getPostList(int categoryId, String field, String query, int page){
+		return postRepository.getPostList(categoryId, field, query, page);
+	}
 	
+	public int getPostCount(String field, String query, int categoryId) {
+		return postRepository.getPostCount(categoryId, field, query);
+	}
+	
+	public Post getPost(int categoryId, int postId) {
+		return postRepository.getPost(categoryId, postId);
+	}
 	
 }

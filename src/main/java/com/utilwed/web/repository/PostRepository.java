@@ -6,6 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import com.utilwed.web.Entity.post.Post;
 
@@ -56,5 +59,148 @@ public class PostRepository {
 
 		return -1;
 	}
+	
+	public List<Post> getPostList(int categoryId, String field, String query, int page){
+		
+		String sql = "SELECT * FROM post "
+				+ "WHERE category_id = ? AND " + field + " LIKE ? " +
+				"ORDER BY created_at DESC " +
+				"LIMIT ? OFFSET ?";
+		List<Post> list = new ArrayList<>();
+		
+	    // SQL 필드명 화이트리스트 체크
+	    if (!List.of("title", "content", "nickname").contains(field)) {
+	        throw new IllegalArgumentException("허용되지 않은 검색 필드");
+	    }
+		
+	    System.out.println(sql);
+		try (Connection con = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
+			PreparedStatement st = con.prepareStatement(sql);){
+		
+			st.setInt(1, categoryId);
+			st.setString(2, "%" + query + "%");
+			st.setInt(3, 20);
+			st.setInt(4, (page-1) * 20);
+			
+			try(ResultSet rs = st.executeQuery();){
+				while(rs.next()) {
+					int id = rs.getInt("id");
+					String title = rs.getString("title");
+					String content = rs.getString("content");
+					String nickname = rs.getString("nickname");
+					Date createdAt = rs.getTimestamp("created_at");
+					Date updatedAt = rs.getTimestamp("updated_at");
+					int likesCount = rs.getInt("likes_count");
+					int dislikesCount = rs.getInt("dislikes_count");
+					int view = rs.getInt("view");
+					int userId = rs.getInt("user_id");
+					int postCategoryId = rs.getInt("category_id");
+					
+					
+					Post post = new Post(
+								id,
+								title,
+								content,
+								nickname,
+								createdAt,
+								updatedAt,
+								likesCount,
+								dislikesCount,
+								view,
+								userId,
+								postCategoryId		
+					);
+					
+					list.add(post);
+					
+				}
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return list;
+	}
+	
+	public int getPostCount(int categoryId, String field, String query) {
+	    int count = 0;
+
+	    if (!List.of("title", "content", "nickname").contains(field)) {
+	        throw new IllegalArgumentException("허용되지 않은 검색 필드");
+	    }
+
+	    String sql = "SELECT COUNT(*) FROM post WHERE category_id = ? AND " + field + " LIKE ?";
+
+	    try (Connection con = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
+	         PreparedStatement st = con.prepareStatement(sql)) {
+
+	        st.setInt(1, categoryId);
+	        st.setString(2, "%" + query + "%");
+
+	        try (ResultSet rs = st.executeQuery()) {
+	            if (rs.next()) {
+	                count = rs.getInt(1);
+	            }
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return count;
+	}
+	 
+	public Post getPost(int categoryId, int postId) {
+		String sql = "SELECT * FROM post WHERE category_id = ? AND id = ?";
+		Post post = null;
+		try (Connection con = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
+			PreparedStatement st = con.prepareStatement(sql);){
+			
+				st.setInt(1, categoryId);
+				st.setInt(2, postId);
+				
+				try(ResultSet rs = st.executeQuery();){
+					if (rs.next()) {
+						int id = rs.getInt("id");
+						String title = rs.getString("title");
+						String content = rs.getString("content");
+						String nickname = rs.getString("nickname");
+						Date createdAt = rs.getDate("created_at");
+						Date updatedAt = rs.getDate("updated_at");
+						int likesCount = rs.getInt("likes_count");
+						int dislikesCount = rs.getInt("dislikes_count");
+						int view = rs.getInt("view");
+						int userId = rs.getInt("user_id");
+						int postCategoryId = rs.getInt("category_id");
+						
+						
+						post = new Post(
+							id,
+							title,
+							content,
+							nickname,
+							createdAt,
+							updatedAt,
+							likesCount,
+							dislikesCount,
+							view,
+							userId,
+							postCategoryId		
+						);
+						
+					}
+				}
+
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		return post;
+		
+		
+	}
+
 	
 }
