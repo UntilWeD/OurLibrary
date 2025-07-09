@@ -6,7 +6,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>유저 페이지</title>
-		<script src="/js/user-edit.js"></script>
+		<script src="/js/user/user-edit.js"></script>
 	</head>
 	<body>
 		<h1>유저 정보</h1>
@@ -24,6 +24,7 @@
 				<button type="submit" id="saveBtn" style="display:none;">수정완료</button>
 			</form>
 			<button onclick="location.href='/'">홈으로</button>
+			<button onclick="location.href='/user/delete'">회원탈퇴</button>
 		</div>
 	</body>
 </html>

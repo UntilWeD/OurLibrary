@@ -45,6 +45,12 @@ public class UserService {
 		}
 	}
 	
+	public boolean deleteUser(int userId, String password) {
+		if(userRepository.deleteUser(userId, password))
+			return true;
+		return false;
+	}
+	
 	
 
 }

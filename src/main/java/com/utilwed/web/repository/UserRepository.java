@@ -26,16 +26,17 @@ public class UserRepository {
 	
 	public boolean saveUser(String username, String password, String email, String nickname) {
 		String sql = "INSERT INTO user (username, password, email, nickname) VALUES(?, ?, ?, ?)";
-		try {
-			
-			Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
-			PreparedStatement pstmt = conn.prepareStatement(sql);
+		try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
+			PreparedStatement pstmt = conn.prepareStatement(sql);){
 			pstmt.setString(1, username);
 			pstmt.setString(2, password);
 			pstmt.setString(3, email);
 			pstmt.setString(4, nickname);
+			
+			
 			int rowsAffected = pstmt.executeUpdate();
 			return rowsAffected > 0;
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -117,6 +118,24 @@ public class UserRepository {
 		
 		return result > 0;
 		
+	}
+	
+	public boolean deleteUser(int userId, String password) {
+		String sql = "DELETE FROM user WHERE id = ? AND password = ?";
+		try {
+			
+			Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, userId);
+			pstmt.setString(2, password);
+
+			int rowsAffected = pstmt.executeUpdate();
+			return rowsAffected > 0;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return false;
 	}
 	
 }

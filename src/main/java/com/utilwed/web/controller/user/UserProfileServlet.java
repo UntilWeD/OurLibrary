@@ -40,7 +40,7 @@ public class UserProfileServlet extends HttpServlet{
 		request.setAttribute("u", loggedInUserDetail);
 		
 		if(loggedInUserDetail != null) {
-			request.getRequestDispatcher("/WEB-INF/view/main/user/userPage.jsp").forward(request, response);
+			request.getRequestDispatcher("/WEB-INF/view/user/userPage.jsp").forward(request, response);
 		} else {
 			session.invalidate();
 			response.sendRedirect("/ErrorPage");
