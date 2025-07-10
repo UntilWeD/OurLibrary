@@ -31,6 +31,16 @@ public class Post {
 		this.userId = userId;
 		this.categoryId = categoryId;
 	}
+	
+	public Post(int id, String title, String content, String nickname, int userId, int categoryId) {
+		super();
+		this.id = id;
+		this.title = title;
+		this.content = content;
+		this.nickname = nickname;
+		this.userId = userId;
+		this.categoryId = categoryId;
+	}
 
 
 	public Post(int id, String title, String content, String nickname, Date createdAt, Date updatedAt, int likeCount,

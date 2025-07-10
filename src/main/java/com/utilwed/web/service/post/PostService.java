@@ -30,5 +30,13 @@ public class PostService {
 	public Post getPost(int categoryId, int postId) {
 		return postRepository.getPost(categoryId, postId);
 	}
+
+	public boolean updatePost(Post post) {
+		return postRepository.updatePost(post);
+	}
+
+	public int deletePost(int postId) {
+		return postRepository.deletePost(postId);
+	}
 	
 }

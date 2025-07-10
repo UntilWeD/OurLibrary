@@ -202,5 +202,47 @@ public class PostRepository {
 		
 	}
 
+	public boolean updatePost(Post post) {
+		String sql = "UPDATE post SET title = ?, content = ? WHERE user_id = ? AND id = ?";
+		
+		try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
+				PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);){
+				pstmt.setString(1, post.getTitle());
+				pstmt.setString(2, post.getContent());
+				pstmt.setInt(3, post.getUserId());
+				pstmt.setInt(4, post.getId());
+				
+				
+				int rowsAffected = pstmt.executeUpdate();
+	
+				return rowsAffected > 0;
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+			return false;
+	}
+
+	public int deletePost(int postId) {
+		String sql = "DELETE FROM post WHERE id = ?";
+
+		try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
+				PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);){
+				pstmt.setInt(1, postId);
+
+				
+				
+				int rowsAffected = pstmt.executeUpdate();
+	
+				return rowsAffected;
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+		return -1;
+
+	}
 	
 }

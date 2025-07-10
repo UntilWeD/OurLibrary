@@ -12,11 +12,28 @@
 <body>
 
     <h1>게시글 목록</h1>
-
     <p>총 게시글 수: ${count}</p>
     <p>현재 페이지: ${page}</p>
     <p>검색어: ${query}</p>
     <p>검색 필드: ${field}</p>
+    
+    <div>
+    	<form> 	
+    		<fieldset>
+    			<legend class="hidden">공지사항 검색 필드</legend>
+    			<label class="hidden">검색분류</label>
+    			<input type="hidden" name="c" value="${param.c}" />
+    			<input type="hidden" name="p" value="1" />
+    			<select name="f">
+    				<option ${(param.f == "title")?"selected":""} value="title">제목</option>
+    				<option ${(param.f == "writer_id")?"selected":"" } value="nickname">작성자</option>
+    			</select>
+    			<label class="hidden">검색어</label>
+    			<input type="text" name="q" value="${param.q}"/>
+    			<input class="btn btn-serach" type="submit" value="검색" />
+    		</fieldset>
+    	</form>
+    </div>
 
 	<div>
 	    <table class="table" border="1">
@@ -33,7 +50,7 @@
 	            <c:forEach var="post" items="${list}">
 	                <tr>
 	                    <td>${post.id}</td>
-	                    <td><a href="list/post?c=${param.c}&po=${post.id}&p=${param.p}&t=${param.t}&q=${param.q}">${post.title}</a></td>
+	                    <td><a href="list/post?c=${param.c}&po=${post.id}&p=${param.p}&f=${param.f}&q=${param.q}">${post.title}</a></td>
 	                    <td>${post.nickname}</td>
 	                    <td><fmt:formatDate value="${post.createdAt}" pattern="yyyy-MM-dd HH:mm"/></td>
 	                    <td>${post.view}</td>
@@ -48,7 +65,7 @@
 	
 	<div>
 	<c:if test="${startNum > 5}">
-		<a href="?c=${param.c}&p=${startNum - 5}&t=${param.t}&q=${param.q}" class="btn btn-prev">이전</a>
+		<a href="?c=${param.c}&p=${startNum - 5}&f=${param.f}&q=${param.q}" class="btn btn-prev">이전</a>
 	</c:if>
 	<c:if test="${startNum <= 5}">
 		<span class="btn btn-prev" onclick="alert('이전 페이지가 없습니다.');">이전</span>
@@ -70,7 +87,7 @@
 	
 	<div>	
 	<c:if test="${startNum + 9 < lastNum}">
-		<a href="?c=&p=${startNum + 10}&t=&q=" class="btn btn-next">다음</a>
+		<a href="?c=${param.c}&p=${startNum + 10}&f=${param.f}&q=${param.q}" class="btn btn-next">다음</a>
 	</c:if>
 	<c:if test="${startNum + 9 >= lastNum}">
 		<span class="btn btn-prev" onclick="alert('다음 페이지가 없습니다.');">다음</span>

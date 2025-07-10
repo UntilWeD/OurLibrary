@@ -13,8 +13,8 @@ import com.utilwed.web.Entity.post.Post;
 import com.utilwed.web.repository.PostRepository;
 import com.utilwed.web.service.post.PostService;
 
-@WebServlet("/category/list/post/save")
-public class PostSaveServlet extends HttpServlet{
+@WebServlet("/category/list/post/edit")
+public class PostUpdateServlet extends HttpServlet{
 	
 	private PostService postService;
 	
@@ -24,25 +24,34 @@ public class PostSaveServlet extends HttpServlet{
 		this.postService = new PostService(postRepository);
 	}
 	
-
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		int categoryId = Integer.parseInt(request.getParameter("c"));
+		int postId = Integer.parseInt(request.getParameter("po"));
+		
+		Post post = postService.getPost(categoryId, postId);
+		request.setAttribute("po", post);
+		
+		
+		
 		request.getRequestDispatcher("/WEB-INF/view/community/post/postForm.jsp")
 		.forward(request, response);
-	}
+		
+	}	
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
 		HttpSession session = request.getSession(false);
+		
 		String title = request.getParameter("title");
 		String content = request.getParameter("content");
 		String nickname = (String) session.getAttribute("loggedInUser");
+		int id = Integer.parseInt(request.getParameter("po"));
 		int categoryId = Integer.parseInt(request.getParameter("c"));
 		int userId = (int) session.getAttribute("userId");
-		int savedPostId = 0;
 		
 		Post post = new Post(
+				id,
 				title,
 				content,
 				nickname,
@@ -50,16 +59,13 @@ public class PostSaveServlet extends HttpServlet{
 				categoryId
 				);
 
-		savedPostId = postService.savePost(post);
+		boolean updated = postService.updatePost(post);
 		
-			
-		
-		if(savedPostId > 0) {
-			response.sendRedirect("/category/list/post?c=" + categoryId + "&po=" + savedPostId);
+		if(updated) {
+			response.sendRedirect("/category/list/post?c=" + categoryId + "&po=" + id);
 		} else {
 			response.sendRedirect("/category/list/post");
 		}
-		
 	}
 	
 }
