@@ -9,7 +9,7 @@
 </head>
 <body>
 	<div>
-		<h1>싱글 포스트 조회수 : ${p.view } 회</h1>
+		<h1>싱글 포스트 조회수 : ${p.view} 회</h1>
 		<h2>제목 : ${p.title}</h2> <h4>작성자 : ${p.nickname }</h4>
 		<p> 내용 : ${p.content}</p>
 		<p>작성일 : ${p.createdAt }</p>
@@ -18,5 +18,5 @@
 	
 </body>
 	<button onclick="location.href='/'">홈으로</button>
-	<button onclick="location.href='/category/list'">글목록</button>
+	<button onclick="location.href='/category/list?c=${param.c}&p=${param.p}&f=${param.f}&q=${param.q}'">글목록</button>
 </html>

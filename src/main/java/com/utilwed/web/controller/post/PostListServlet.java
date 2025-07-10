@@ -26,7 +26,7 @@ public class PostListServlet extends HttpServlet{
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String categoryId_ = request.getParameter("cid");
+		String categoryId_ = request.getParameter("c");
 		String field_ = request.getParameter("f");
 		String query_ = request.getParameter("q");
 		String page_ = request.getParameter("p");

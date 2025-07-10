@@ -23,9 +23,9 @@
 				<p>환영합니다. 여기에 로그인 후 보여줄 콘텐츠를 작성하세요.</p>
 				
 				<div>
-					<a href="category/list/post/save?cid=1" class="btn btn-info">글쓰기</a>
+					<a href="category/list/post/save?c=1" class="btn btn-info">글쓰기</a>
 				
-					<a href="category/list" class="btn btn-info">글목록</a>
+					<a href="category/list?c=1" class="btn btn-info">글목록</a>
 				
 					<a href="user/profile" class="btn btn-info">마이 페이지</a>
 					

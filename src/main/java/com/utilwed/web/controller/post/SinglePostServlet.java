@@ -25,8 +25,8 @@ public class SinglePostServlet extends HttpServlet{
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		int categoryId = Integer.parseInt(request.getParameter("cid"));
-		int postId = Integer.parseInt(request.getParameter("pid"));
+		int categoryId = Integer.parseInt(request.getParameter("c"));
+		int postId = Integer.parseInt(request.getParameter("po"));
 		
 		Post post = postService.getPost(categoryId, postId);
 		request.setAttribute("p", post);
