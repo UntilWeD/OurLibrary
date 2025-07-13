@@ -4,7 +4,7 @@ package com.utilwed.web.service.post;
 
 import java.util.List;
 
-import com.utilwed.web.Entity.post.Post;
+import com.utilwed.web.Entity.community.Post;
 import com.utilwed.web.repository.PostRepository;
 
 public class PostService {

@@ -10,12 +10,6 @@
     <title>게시글 목록</title>
 </head>
 <body>
-
-    <h1>게시글 목록</h1>
-    <p>총 게시글 수: ${count}</p>
-    <p>현재 페이지: ${page}</p>
-    <p>검색어: ${query}</p>
-    <p>검색 필드: ${field}</p>
     
     <div>
     	<form> 	
@@ -97,7 +91,7 @@
 	
 	<div>
 		<button onclick="location.href='/'">홈으로</button>
-		<button onclick="location.href='/category/list/post/save?cid=1'">글쓰기</button>
+		<button onclick="location.href='/category/list/post/save?c=${param.c}'">글쓰기</button>
 	</div>
 
 </body>

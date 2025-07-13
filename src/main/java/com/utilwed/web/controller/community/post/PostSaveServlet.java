@@ -1,4 +1,4 @@
-package com.utilwed.web.controller.post;
+package com.utilwed.web.controller.community.post;
 
 import java.io.IOException;
 
@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.utilwed.web.Entity.post.Post;
+import com.utilwed.web.Entity.community.Post;
 import com.utilwed.web.repository.PostRepository;
 import com.utilwed.web.service.post.PostService;
 
@@ -33,12 +33,13 @@ public class PostSaveServlet extends HttpServlet{
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
 		HttpSession session = request.getSession(false);
+		
 		String title = request.getParameter("title");
 		String content = request.getParameter("content");
-		String nickname = (String) session.getAttribute("loggedInUser");
+		
 		int categoryId = Integer.parseInt(request.getParameter("c"));
+		String nickname = (String) session.getAttribute("loggedInUser");
 		int userId = (int) session.getAttribute("userId");
 		int savedPostId = 0;
 		

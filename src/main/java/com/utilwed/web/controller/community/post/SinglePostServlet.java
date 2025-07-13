@@ -1,4 +1,4 @@
-package com.utilwed.web.controller.post;
+package com.utilwed.web.controller.community.post;
 
 import java.io.IOException;
 
@@ -8,11 +8,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.utilwed.web.Entity.community.Post;
 import com.utilwed.web.repository.PostRepository;
 import com.utilwed.web.service.post.PostService;
 
-@WebServlet("/category/list/post/delete")
-public class PostDeleteServlet extends HttpServlet{
+@WebServlet("/category/list/post")
+public class SinglePostServlet extends HttpServlet{
 	
 	private PostService postService;
 	
@@ -23,15 +24,19 @@ public class PostDeleteServlet extends HttpServlet{
 	}
 	
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		int postId = Integer.parseInt(request.getParameter("po"));
+		
 		int categoryId = Integer.parseInt(request.getParameter("c"));
+		int postId = Integer.parseInt(request.getParameter("po"));
 		
-		int deletedRow = postService.deletePost(postId);
+		Post post = postService.getPost(categoryId, postId);
+		request.setAttribute("po", post);
 		
-		if(deletedRow > 0) {
-			response.sendRedirect("/category/list?c=" + categoryId + "&p=1");
-		}
+		request.getRequestDispatcher("/WEB-INF/view/community/post/post.jsp")
+		.forward(request, response);
+		
+		
 	}
+	
 }

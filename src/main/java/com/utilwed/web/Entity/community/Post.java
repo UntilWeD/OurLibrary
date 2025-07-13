@@ -1,4 +1,4 @@
-package com.utilwed.web.Entity.post;
+package com.utilwed.web.Entity.community;
 
 import java.time.LocalDateTime;
 import java.util.Date;

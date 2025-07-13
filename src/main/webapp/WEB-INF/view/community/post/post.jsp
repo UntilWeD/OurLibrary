@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>단일 Post</title>
 </head>
 <body>
 	<div>

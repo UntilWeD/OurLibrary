@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.utilwed.web.Entity.post.Post;
+import com.utilwed.web.Entity.community.Post;
 
 public class PostRepository {
 	

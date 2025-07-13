@@ -1,4 +1,4 @@
-package com.utilwed.web.controller.post;
+package com.utilwed.web.controller.community.post;
 
 import java.io.IOException;
 import java.util.List;
@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.utilwed.web.Entity.post.Post;
+import com.utilwed.web.Entity.community.Post;
 import com.utilwed.web.repository.PostRepository;
 import com.utilwed.web.service.post.PostService;
 
