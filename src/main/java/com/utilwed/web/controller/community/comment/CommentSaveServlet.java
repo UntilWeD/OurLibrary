@@ -1,3 +1,5 @@
+package com.utilwed.web.controller.community.comment;
+
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -6,8 +8,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import org.apache.jasper.tagplugins.jstl.core.If;
 
 import com.utilwed.web.Entity.community.Comment;
 import com.utilwed.web.repository.CommentRepository;
@@ -27,11 +27,11 @@ public class CommentSaveServlet extends HttpServlet{
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession(false);
-		String categoryId = request.getParameter("c");
+		String categoryId = request.getParameter("categoryId");
 	
-		String content = request.getParameter("commentContent");
-		int postId = Integer.parseInt(request.getParameter("po"));
-		int userId = Integer.parseInt((String) session.getAttribute("userId"));
+		String content = request.getParameter("content");
+		int postId = Integer.parseInt(request.getParameter("postId"));
+		int userId = (int) session.getAttribute("userId");
 		
 		
 		Comment comment = new Comment(
@@ -41,7 +41,7 @@ public class CommentSaveServlet extends HttpServlet{
 		int commentId = commentService.saveComment(comment);
 
 		if (commentId > 0) {
-			response.sendRedirect("/category/list/post?c=" +categoryId+ "$po=" + postId);
+			response.sendRedirect("/category/list/post?c=" +categoryId+ "&po=" + postId);
 		} else {
 			// 오류시 오류페이지로 이동할 수 있게 후에 수정
 			response.sendRedirect("/");

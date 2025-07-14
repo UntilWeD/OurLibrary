@@ -1,17 +1,17 @@
 package com.utilwed.web.Entity.community;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 public class Comment {
 	private int id;
 	private String content;
-	private LocalDateTime createdAt;
-	private LocalDateTime updatedAt;
+	private Date createdAt;
+	private Date updatedAt;
 	
 	private int userId;
 	private int postId;
 	
-	
+	private String username;
 	
 	
 	@Override
@@ -23,7 +23,7 @@ public class Comment {
 	public Comment() {
 	}
 
-	public Comment(int id, String content, LocalDateTime createdAt, LocalDateTime updatedAt, int userId, int postId) {
+	public Comment(int id, String content, Date createdAt, Date updatedAt, int userId, int postId) {
 		this.id = id;
 		this.content = content;
 		this.createdAt = createdAt;
@@ -37,6 +37,17 @@ public class Comment {
 		this.content = content;
 		this.userId = userId;
 		this.postId = postId;
+	}
+	
+	
+
+	public Comment(int id, String content, Date createdAt, int userId, int postId, String username) {
+		this.id = id;
+		this.content = content;
+		this.createdAt = createdAt;
+		this.userId = userId;
+		this.postId = postId;
+		this.username = username;
 	}
 
 	public int getId() {
@@ -55,19 +66,19 @@ public class Comment {
 		this.content = content;
 	}
 
-	public LocalDateTime getCreatedAt() {
+	public Date getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(LocalDateTime createdAt) {
+	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
 	}
 
-	public LocalDateTime getUpdatedAt() {
+	public Date getUpdatedAt() {
 		return updatedAt;
 	}
 
-	public void setUpdatedAt(LocalDateTime updatedAt) {
+	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
 	}
 
@@ -86,6 +97,16 @@ public class Comment {
 	public void setPostId(int postId) {
 		this.postId = postId;
 	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	
+	
 	
 	
 	

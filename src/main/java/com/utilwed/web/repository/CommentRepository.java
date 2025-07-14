@@ -6,8 +6,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import com.utilwed.web.Entity.community.Comment;
+import com.utilwed.web.Entity.community.Post;
 
 public class CommentRepository {
 	
@@ -26,7 +30,7 @@ public class CommentRepository {
 	}
 	
 	public int saveComment(Comment comment) {
-		String sql = "INSERT INTO comment (content, userId, postId) VALUES (?, ?, ?)";
+		String sql = "INSERT INTO comment (content, user_id, post_id) VALUES (?, ?, ?)";
 		try(Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
 			PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);){
 			pstmt.setString(1, comment.getContent());
@@ -46,6 +50,89 @@ public class CommentRepository {
 			
 		} catch (SQLException e) {
 			// TODO: handle exception
+			e.printStackTrace();
+		}
+		
+		return -1;
+	}
+	
+	public List<Comment> getCommentList(int postId){
+		String sql = "SELECT C.id, C.content, C.created_at, C.user_id, C.post_id, U.username "
+				+ "FROM comment C INNER JOIN user U "
+				+ "ON c.user_id = u.id "
+				+ "WHERE post_id = ? "
+				+ "ORDER BY created_at DESC";
+		List<Comment> result = new ArrayList<Comment>();
+		
+		try (Connection con = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
+				PreparedStatement st = con.prepareStatement(sql);){
+			
+				st.setInt(1, postId);
+				
+				try(ResultSet rs = st.executeQuery();){
+					while(rs.next()) {
+						int id = rs.getInt("id");
+						String content = rs.getString("content");
+						Date createdAt = rs.getTimestamp("created_at");
+						int userId = rs.getInt("user_id");
+						int resultPostId = rs.getInt("post_id");
+						String userName = rs.getString("username");
+						
+						Comment comment = new Comment(
+								id,
+								content,
+								createdAt,
+								userId,
+								resultPostId,
+								userName
+						);
+						
+						result.add(comment);
+					}
+				}
+
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		
+		return result;
+	}
+
+	public boolean updateComment(int commentId, String content) {
+		String sql = "UPDATE comment SET content = ? WHERE id = ?";
+		
+		try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
+				PreparedStatement pstmt = conn.prepareStatement(sql);){
+			pstmt.setString(1, content);
+			pstmt.setInt(2, commentId);
+			
+			int rowsAfftected = pstmt.executeUpdate();
+			
+			return rowsAfftected > 0;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		
+		return false;
+	}
+	
+	public int deleteComment(int commentId) {
+		String sql = "DELETE FROM comment WHERE id = ?";
+		
+		try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
+				PreparedStatement pstmt = conn.prepareStatement(sql);){
+			pstmt.setInt(1, commentId);
+			
+			int rowsAfftected = pstmt.executeUpdate();
+			
+			return rowsAfftected;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 		
 		return -1;

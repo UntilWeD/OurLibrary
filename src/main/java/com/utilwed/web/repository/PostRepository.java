@@ -66,7 +66,7 @@ public class PostRepository {
 				+ "WHERE category_id = ? AND " + field + " LIKE ? " +
 				"ORDER BY created_at DESC " +
 				"LIMIT ? OFFSET ?";
-		List<Post> list = new ArrayList<>();
+		List<Post> result = new ArrayList<>();
 		
 	    // SQL 필드명 화이트리스트 체크
 	    if (!List.of("title", "content", "nickname").contains(field)) {
@@ -111,7 +111,7 @@ public class PostRepository {
 								postCategoryId		
 					);
 					
-					list.add(post);
+					result.add(post);
 					
 				}
 			}
@@ -121,7 +121,7 @@ public class PostRepository {
 			e.printStackTrace();
 		}
 		
-		return list;
+		return result;
 	}
 	
 	public int getPostCount(int categoryId, String field, String query) {

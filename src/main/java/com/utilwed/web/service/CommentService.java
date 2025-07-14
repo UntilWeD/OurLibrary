@@ -17,16 +17,17 @@ public class CommentService {
 		return commentRepository.saveComment(comment);
 	}
 	
-	public List<Comment> getCommentList(Long postId){
-		
-		return null;
+	public List<Comment> getCommentList(int postId){
+		return commentRepository.getCommentList(postId);
 	}
 	
-	public boolean updateComment(int commentId) {
-		return false;
-	
+	public boolean updateComment(int commentId, String content) {
+		return commentRepository.updateComment(commentId, content);
 	}
 	
+	public int deleteComment(int commentId) {
+		return commentRepository.deleteComment(commentId);
+	}
 	
 	
 }
