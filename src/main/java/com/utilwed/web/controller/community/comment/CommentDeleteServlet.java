@@ -10,18 +10,19 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.utilwed.web.repository.CommentRepository;
+import com.utilwed.web.repository.PostRepository;
 import com.utilwed.web.service.CommentService;
 
 @WebServlet("/category/list/post/comment/delete")
 public class CommentDeleteServlet extends HttpServlet{
 
-	
 	private CommentService commentService;
 	
 	@Override
 	public void init() throws ServletException {
-		CommentRepository commentRepository = new CommentRepository();
-		this.commentService = new CommentService(commentRepository);	
+		CommentRepository commentRepository = new CommentRepository();	
+		PostRepository postRepository = new PostRepository();
+		this.commentService = new CommentService(commentRepository, postRepository);
 	}
 	
 	@Override
@@ -31,7 +32,7 @@ public class CommentDeleteServlet extends HttpServlet{
 		int commentId = Integer.parseInt(request.getParameter("commentId"));
 		
 		
-		int deleteComment = commentService.deleteComment(commentId); 
+		int deleteComment = commentService.deleteComment(commentId, postId); 
 		
 		if (deleteComment > 0) {
 			response.sendRedirect("/category/list/post?c=" +categoryId+ "&po=" + postId);

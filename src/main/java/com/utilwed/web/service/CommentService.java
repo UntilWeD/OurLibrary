@@ -4,29 +4,39 @@ import java.util.List;
 
 import com.utilwed.web.Entity.community.Comment;
 import com.utilwed.web.repository.CommentRepository;
+import com.utilwed.web.repository.PostRepository;
 
 public class CommentService {
 
 	private CommentRepository commentRepository;
+	private PostRepository postRepository;
 
-	public CommentService(CommentRepository commentRepository) {
+	
+	
+	public CommentService(CommentRepository commentRepository, PostRepository postRepository) {
 		this.commentRepository = commentRepository;
+		this.postRepository = postRepository;
+	}
+
+	public int saveComment(Comment comment, int postId) {
+		int savedCommentId = commentRepository.saveComment(comment);
+		postRepository.updatePostCommentCount(postId);
+		
+		return savedCommentId;
 	}
 	
-	public int saveComment(Comment comment) {
-		return commentRepository.saveComment(comment);
-	}
-	
-	public List<Comment> getCommentList(int postId){
-		return commentRepository.getCommentList(postId);
+	public List<Comment> getCommentList(int postId, int commentPage){
+		return commentRepository.getCommentList(postId, commentPage);
 	}
 	
 	public boolean updateComment(int commentId, String content) {
 		return commentRepository.updateComment(commentId, content);
 	}
 	
-	public int deleteComment(int commentId) {
-		return commentRepository.deleteComment(commentId);
+	public int deleteComment(int commentId, int postId) {
+		int affectedRows = commentRepository.deleteComment(commentId);
+		postRepository.decrementCommentCount(postId);
+		return affectedRows;
 	}
 	
 	

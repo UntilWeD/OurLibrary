@@ -73,7 +73,6 @@ public class PostRepository {
 	        throw new IllegalArgumentException("허용되지 않은 검색 필드");
 	    }
 		
-	    System.out.println(sql);
 		try (Connection con = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
 			PreparedStatement st = con.prepareStatement(sql);){
 		
@@ -90,12 +89,12 @@ public class PostRepository {
 					String nickname = rs.getString("nickname");
 					Date createdAt = rs.getTimestamp("created_at");
 					Date updatedAt = rs.getTimestamp("updated_at");
-					int likesCount = rs.getInt("likes_count");
-					int dislikesCount = rs.getInt("dislikes_count");
+					int likeCount = rs.getInt("like_count");
+					int dislikeCount = rs.getInt("dislike_count");
 					int view = rs.getInt("view");
 					int userId = rs.getInt("user_id");
 					int postCategoryId = rs.getInt("category_id");
-					
+					int commentCount = rs.getInt("comment_count");
 					
 					Post post = new Post(
 								id,
@@ -104,11 +103,12 @@ public class PostRepository {
 								nickname,
 								createdAt,
 								updatedAt,
-								likesCount,
-								dislikesCount,
+								likeCount,
+								dislikeCount,
+								commentCount,
 								view,
 								userId,
-								postCategoryId		
+								postCategoryId
 					);
 					
 					result.add(post);
@@ -169,12 +169,12 @@ public class PostRepository {
 						String nickname = rs.getString("nickname");
 						Date createdAt = rs.getDate("created_at");
 						Date updatedAt = rs.getDate("updated_at");
-						int likesCount = rs.getInt("likes_count");
-						int dislikesCount = rs.getInt("dislikes_count");
+						int likeCount = rs.getInt("like_count");
+						int dislikeCount = rs.getInt("dislike_count");
+						int commentCount = rs.getInt("comment_count");
 						int view = rs.getInt("view");
 						int userId = rs.getInt("user_id");
 						int postCategoryId = rs.getInt("category_id");
-						
 						
 						post = new Post(
 							id,
@@ -183,11 +183,12 @@ public class PostRepository {
 							nickname,
 							createdAt,
 							updatedAt,
-							likesCount,
-							dislikesCount,
+							likeCount,
+							dislikeCount,
+							commentCount,
 							view,
 							userId,
-							postCategoryId		
+							postCategoryId
 						);
 						
 					}
@@ -243,6 +244,71 @@ public class PostRepository {
 
 		return -1;
 
+	}
+
+	public void updatePostViewCount(int postId) {
+		String sql = "UPDATE post SET view = view + 1 WHERE id = ?";
+		
+		try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
+				PreparedStatement pstmt = conn.prepareStatement(sql);){
+				pstmt.setInt(1, postId);
+				
+				
+				int rowsAffected = pstmt.executeUpdate();
+	
+				if(rowsAffected > 0) {
+					return;
+				} else{
+					throw new SQLException("조회수를 올리던 중 오류 발생");
+				}
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		
+	}
+
+	public void updatePostCommentCount(int postId) {
+		String sql = "UPDATE post SET comment_count = comment_count + 1 WHERE id = ?";
+		
+		try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
+				PreparedStatement pstmt = conn.prepareStatement(sql);){
+				pstmt.setInt(1, postId);
+				
+				
+				int rowsAffected = pstmt.executeUpdate();
+	
+				if(rowsAffected > 0) {
+					return;
+				} else{
+					throw new SQLException("댓글수를 올리던 중 오류 발생");
+				}
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+	}
+
+	public void decrementCommentCount(int postId) {
+		String sql = "UPDATE post SET comment_count = comment_count - 1 WHERE id = ?";
+		
+		try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
+				PreparedStatement pstmt = conn.prepareStatement(sql);){
+				pstmt.setInt(1, postId);
+				
+				
+				int rowsAffected = pstmt.executeUpdate();
+	
+				if(rowsAffected > 0) {
+					return;
+				} else{
+					throw new SQLException("댓글수를 감소하던 중 오류 발생");
+				}
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		
 	}
 	
 }

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 
 import com.utilwed.web.Entity.community.Comment;
 import com.utilwed.web.repository.CommentRepository;
+import com.utilwed.web.repository.PostRepository;
 import com.utilwed.web.service.CommentService;
 
 @WebServlet("/category/list/post/comment/save")
@@ -20,8 +21,9 @@ public class CommentSaveServlet extends HttpServlet{
 	
 	@Override
 	public void init() throws ServletException {
-		CommentRepository commentRepository = new CommentRepository();
-		this.commentService = new CommentService(commentRepository);	
+		CommentRepository commentRepository = new CommentRepository();	
+		PostRepository postRepository = new PostRepository();
+		this.commentService = new CommentService(commentRepository, postRepository);
 	}
 	
 	@Override
@@ -38,7 +40,7 @@ public class CommentSaveServlet extends HttpServlet{
 				content,userId, postId
 				);
 		
-		int commentId = commentService.saveComment(comment);
+		int commentId = commentService.saveComment(comment, postId);
 
 		if (commentId > 0) {
 			response.sendRedirect("/category/list/post?c=" +categoryId+ "&po=" + postId);

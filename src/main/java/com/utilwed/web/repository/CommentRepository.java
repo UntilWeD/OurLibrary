@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.utilwed.web.Entity.community.Comment;
-import com.utilwed.web.Entity.community.Post;
 
 public class CommentRepository {
 	
@@ -56,20 +55,23 @@ public class CommentRepository {
 		return -1;
 	}
 	
-	public List<Comment> getCommentList(int postId){
+	public List<Comment> getCommentList(int postId, int commentPage){
 		String sql = "SELECT C.id, C.content, C.created_at, C.user_id, C.post_id, U.username "
 				+ "FROM comment C INNER JOIN user U "
 				+ "ON c.user_id = u.id "
 				+ "WHERE post_id = ? "
-				+ "ORDER BY created_at DESC";
+				+ "ORDER BY created_at DESC "
+				+ "LIMIT ? OFFSET ?";
 		List<Comment> result = new ArrayList<Comment>();
 		
 		try (Connection con = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
-				PreparedStatement st = con.prepareStatement(sql);){
+				PreparedStatement pstmt = con.prepareStatement(sql);){
 			
-				st.setInt(1, postId);
+				pstmt.setInt(1, postId);
+				pstmt.setInt(2, 20);
+				pstmt.setInt(3, 20 * (commentPage-1));
 				
-				try(ResultSet rs = st.executeQuery();){
+				try(ResultSet rs = pstmt.executeQuery();){
 					while(rs.next()) {
 						int id = rs.getInt("id");
 						String content = rs.getString("content");

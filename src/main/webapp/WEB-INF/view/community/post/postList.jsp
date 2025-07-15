@@ -14,7 +14,7 @@
     <div>
     	<form> 	
     		<fieldset>
-    			<legend class="hidden">공지사항 검색 필드</legend>
+    			<legend class="hidden">글 검색 필드</legend>
     			<label class="hidden">검색분류</label>
     			<input type="hidden" name="c" value="${param.c}" />
     			<input type="hidden" name="p" value="1" />
@@ -44,7 +44,7 @@
 	            <c:forEach var="post" items="${list}">
 	                <tr>
 	                    <td>${post.id}</td>
-	                    <td><a href="list/post?c=${param.c}&po=${post.id}&p=${param.p}&f=${param.f}&q=${param.q}">${post.title}</a></td>
+	                    <td><a href="list/post?c=${param.c}&po=${post.id}&p=${param.p}&f=${param.f}&q=${param.q}">${post.title} [<span>${post.commentCount}</span>] </a></td>
 	                    <td>${post.nickname}</td>
 	                    <td><fmt:formatDate value="${post.createdAt}" pattern="yyyy-MM-dd HH:mm"/></td>
 	                    <td>${post.view}</td>

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.utilwed.web.repository.CommentRepository;
+import com.utilwed.web.repository.PostRepository;
 import com.utilwed.web.service.CommentService;
 
 @WebServlet("/category/list/post/comment/update")
@@ -18,8 +19,9 @@ public class CommentUpdateServlet extends HttpServlet{
 	
 	@Override
 	public void init() throws ServletException {
-		CommentRepository commentRepository = new CommentRepository();
-		this.commentService = new CommentService(commentRepository);	
+		CommentRepository commentRepository = new CommentRepository();	
+		PostRepository postRepository = new PostRepository();
+		this.commentService = new CommentService(commentRepository, postRepository);
 	}
 	
 

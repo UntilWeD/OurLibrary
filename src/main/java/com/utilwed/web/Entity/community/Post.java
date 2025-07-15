@@ -1,6 +1,5 @@
 package com.utilwed.web.Entity.community;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Post {
@@ -12,6 +11,7 @@ public class Post {
 	private Date updatedAt;
 	private int likeCount;
 	private int dislikeCount;
+	private int commentCount;
 	private int view;
 	
 	private int userId;
@@ -23,6 +23,7 @@ public class Post {
 	}
 	
 
+	// Post 저장시
 	public Post(String title, String content, String nickname, int userId, int categoryId) {
 		super();
 		this.title = title;
@@ -32,6 +33,7 @@ public class Post {
 		this.categoryId = categoryId;
 	}
 	
+	// Post 수정시
 	public Post(int id, String title, String content, String nickname, int userId, int categoryId) {
 		super();
 		this.id = id;
@@ -41,30 +43,38 @@ public class Post {
 		this.userId = userId;
 		this.categoryId = categoryId;
 	}
+	
 
-
+	// Post 불러올 시
 	public Post(int id, String title, String content, String nickname, Date createdAt, Date updatedAt, int likeCount,
-			int dislikeCount, int view, int userId, int categoryId) {
+			int dislikeCount, int commentCount, int view, int userId, int categoryId) {
 		this.id = id;
 		this.title = title;
 		this.content = content;
 		this.nickname = nickname;
-		
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
-		
 		this.likeCount = likeCount;
 		this.dislikeCount = dislikeCount;
+		this.commentCount = commentCount;
 		this.view = view;
 		this.userId = userId;
 		this.categoryId = categoryId;
 	}
 	
 	
-
-
 	public int getId() {
 		return id;
+	}
+
+
+	public int getCommentCount() {
+		return commentCount;
+	}
+
+
+	public void setCommentCount(int commentCount) {
+		this.commentCount = commentCount;
 	}
 
 
@@ -171,14 +181,6 @@ public class Post {
 	public void setCategoryId(int categoryId) {
 		this.categoryId = categoryId;
 	}
-
-
-
-	
-	
-	
-	
-	
 	
 	
 }

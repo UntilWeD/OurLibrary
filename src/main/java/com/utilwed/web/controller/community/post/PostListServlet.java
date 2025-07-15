@@ -10,7 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.utilwed.web.Entity.community.Post;
+import com.utilwed.web.repository.CommentRepository;
 import com.utilwed.web.repository.PostRepository;
+import com.utilwed.web.service.CommentService;
 import com.utilwed.web.service.post.PostService;
 
 @WebServlet("/category/list")
@@ -22,6 +24,7 @@ public class PostListServlet extends HttpServlet{
 	public void init() throws ServletException {
 		PostRepository postRepository = new PostRepository();
 		this.postService = new PostService(postRepository);
+
 	}
 	
 	@Override
@@ -48,13 +51,15 @@ public class PostListServlet extends HttpServlet{
 			categoryId = Integer.parseInt(categoryId_);
 		
 		
-		// 전체 post 20개씩 가져와서 jsp로 전송
+		// 1. PostList 가져오기
+		// - 전체 post 20개씩 가져와서 jsp로 전송
 		List<Post> list = postService.getPostList(categoryId, field, query, page);
 		request.setAttribute("list", list);
 		
-		// 전체 post 개수 가져와서 jsp로 전송
+		// - 전체 post 개수 가져와서 jsp로 전송
 		int totalPostSize = postService.getPostCount(field, query, categoryId);
 		request.setAttribute("count", totalPostSize);
+		
 		
 		request.getRequestDispatcher("/WEB-INF/view/community/post/postList.jsp")
 		.forward(request, response);

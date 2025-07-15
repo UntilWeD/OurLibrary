@@ -39,4 +39,8 @@ public class PostService {
 		return postRepository.deletePost(postId);
 	}
 	
+	public void updateView(int postId) {
+		postRepository.updatePostViewCount(postId);
+	}
+	
 }

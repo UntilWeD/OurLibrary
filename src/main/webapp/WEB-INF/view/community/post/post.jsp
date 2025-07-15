@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -25,8 +27,8 @@
 			</div>
 			
 			<c:if test="${sessionScope.userId == comment.userId}">
-				<button onclick="enableEdit(${comment.id}, '${comment.content}', ${po.id}, ${param.c })">수정</button>
-				<form id="deleteComment" action="/category/list/post/comment/delete" method="post" style="display:inline;">
+				<button class="commentEditButton" onclick="enableEdit(${comment.id}, '${comment.content}', ${po.id}, ${param.c })">수정</button>
+				<form class="commentEditButton" id="deleteCommentForm" action="/category/list/post/comment/delete" method="post" style="display:inline;">
 				    <input type="hidden" name="po" value="${po.id}">
 				    <input type="hidden" name="c" value="${param.c}">
 				    <input type="hidden" name="commentId" value="${comment.id}">
@@ -50,6 +52,24 @@
 			</p>
 			<button type="submit">작성하기</button>
 		</form>
+	</div>
+	
+	<div id="commentPage">
+		<c:set var="page" value="${(empty param.p) ? 1 : param.p }" />
+		<c:set var="startNum" value="${(page <= 6)?1:(page-5)}"/>
+		<c:set var="lastNum" value="${fn:substringBefore(Math.ceil(po.commentCount/20), '.')}"/>
+		
+		<h3 class="hidden">현재 댓글 페이지</h3>
+		<ul>
+		<c:forEach var="i" begin="0" end="9">
+			<c:if test="${(startNum+i) <= lastNum}">
+			<li><a href="?c=${param.c}&cp=${i+1}&po=${po.id}">${startNum + i}</a></li>
+			</c:if>
+			
+		</c:forEach>
+		</ul>
+		
+		
 	</div>
 	
 </body>
