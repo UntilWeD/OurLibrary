@@ -8,14 +8,18 @@
 <head>
 	<meta charset="UTF-8">
 	<title>단일 Post</title>
-	<script src="/js/community/comment-edit.js"></script>
 </head>
 <body>
 	<div>
 		<h2>제목 : ${po.title}</h2> <h4>작성자 : ${po.nickname }</h4>
 		<p> 내용 : ${po.content}</p>
 		<p>작성일 : ${po.createdAt }</p>
-		<p>좋아요 : ${po.likeCount } 싫어요 : ${po.dislikeCount } </p>
+		<div class="voteSection">
+			<button class="vote-button" data-post-id="${po.id}" data-vote-type="LIKE">
+			좋아요 (<span id="likeCount-${po.id}" class="like-count">${po.likeCount}</span>)</button>
+			<button class="vote-button" data-post-id="${po.id}" data-vote-type="DISLIKE">
+			싫어요 (<span id="dislikeCount-${po.id}" class="dislike-count">${po.dislikeCount}</span>)</button>
+		</div>
 		<p>조회수 : ${po.view} 회</p>
 	</div>
 	<div>
@@ -71,18 +75,19 @@
 		
 		
 	</div>
-	
-</body>
-<c:if test="${sessionScope.userId == po.userId}">
+	<c:if test="${sessionScope.userId == po.userId}">
     <button onclick="location.href='/category/list/post/edit?c=${po.categoryId}&po=${po.id}'">수정</button>
 	<form id="deleteForm" action="/category/list/post/delete" method="post" style="display:inline;">
 	    <input type="hidden" name="po" value="${po.id}">
 	    <input type="hidden" name="c" value="${param.c}">
 	    <button type="submit">삭제</button>
 	</form>
-</c:if>
-<div>
-	<button onclick="location.href='/'">홈으로</button>
-	<button onclick="location.href='/category/list?c=${param.c}&p=${param.p}&f=${param.f}&q=${param.q}'">글목록</button>
-</div>
+	</c:if>
+	<div>
+		<button onclick="location.href='/'">홈으로</button>
+		<button onclick="location.href='/category/list?c=${param.c}&p=${param.p}&f=${param.f}&q=${param.q}'">글목록</button>
+	</div>
+</body>
+	<script src="/js/community/comment-edit.js"></script>
+	<script src="/js/community/vote.js"></script>
 </html>

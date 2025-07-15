@@ -8,7 +8,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.utilwed.web.Entity.community.Post;
 
@@ -309,6 +311,81 @@ public class PostRepository {
 				e.printStackTrace();
 			}
 		
+	}
+
+	public void incrementLikeCount(int postId) {
+		String sql = "UPDATE post SET like_count = like_count + 1 WHERE id = ?";
+		
+		try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
+				PreparedStatement pstmt = conn.prepareStatement(sql);){
+				pstmt.setInt(1, postId);
+				
+				
+				int rowsAffected = pstmt.executeUpdate();
+	
+				if(rowsAffected > 0) {
+					return;
+				} else{
+					throw new SQLException("좋아요 수를 증가시키던 중 오류 발생");
+				}
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		
+	}
+	
+	public void incrementDislikeCount(int postId) {
+		String sql = "UPDATE post SET dislike_count = dislike_count + 1 WHERE id = ?";
+		
+		try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
+				PreparedStatement pstmt = conn.prepareStatement(sql);){
+				pstmt.setInt(1, postId);
+				
+				
+				int rowsAffected = pstmt.executeUpdate();
+	
+				if(rowsAffected > 0) {
+					return;
+				} else{
+					throw new SQLException("싫어요 수를 증가시키던 중 오류 발생");
+				}
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		
+	}
+
+	public Map<String, Integer> getVotesCount(int postId) {
+		String sql = "SELECT like_count, dislike_count FROM post WHERE id = ?";
+		try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
+				PreparedStatement pstmt = conn.prepareStatement(sql);){
+				pstmt.setInt(1, postId);
+				
+				
+				
+				try(ResultSet rs = pstmt.executeQuery();){
+					if(rs.next()) {
+						int likeCount = rs.getInt("like_count");
+						int dislikeCount = rs.getInt("dislike_count");
+						
+						Map<String, Integer> responseMap = new HashMap<>();
+						responseMap.put("newLikeCount", likeCount);
+						responseMap.put("newDislikeCount", dislikeCount);
+						
+						return responseMap;
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		
+		
+		return null;
 	}
 	
 }
