@@ -1,6 +1,7 @@
 package com.utilwed.web.Entity.community;
 
 import java.util.Date;
+import java.util.List;
 
 public class Post {
 	private int id;
@@ -13,6 +14,8 @@ public class Post {
 	private int dislikeCount;
 	private int commentCount;
 	private int view;
+	private List<Attachment> attachments;
+	
 	
 	private int userId;
 	private int categoryId;
@@ -63,6 +66,16 @@ public class Post {
 	}
 	
 	
+	public List<Attachment> getAttachments() {
+		return attachments;
+	}
+
+
+	public void setAttachments(List<Attachment> attachments) {
+		this.attachments = attachments;
+	}
+
+
 	public int getId() {
 		return id;
 	}

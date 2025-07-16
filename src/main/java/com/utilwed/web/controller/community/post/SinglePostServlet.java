@@ -1,6 +1,7 @@
 package com.utilwed.web.controller.community.post;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.utilwed.web.Entity.community.Comment;
 import com.utilwed.web.Entity.community.Post;
+import com.utilwed.web.repository.AttachmentRepository;
 import com.utilwed.web.repository.CommentRepository;
 import com.utilwed.web.repository.PostRepository;
 import com.utilwed.web.service.CommentService;
@@ -25,7 +27,8 @@ public class SinglePostServlet extends HttpServlet{
 	@Override
 	public void init() throws ServletException {
 		PostRepository postRepository = new PostRepository();
-		this.postService = new PostService(postRepository);
+		AttachmentRepository attachmentRepository = new AttachmentRepository();
+		this.postService = new PostService(postRepository, attachmentRepository);
 		// 이건 유의하도록 하자, 같은 객체로 의존성 
 		CommentRepository commentRepository = new CommentRepository();
 		this.commentService = new CommentService(commentRepository, postRepository);
@@ -47,16 +50,25 @@ public class SinglePostServlet extends HttpServlet{
 		
 		
 		//1. 포스트 가져오기
-		Post post = postService.getPost(categoryId, postId);
-		request.setAttribute("po", post);
+		try {
+			Post post = postService.getPost(categoryId, postId);
+			request.setAttribute("po", post);
+		} catch (NumberFormatException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "유효하지 않은 게시물 ID입니다.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            request.setAttribute("error", "데이터베이스 오류가 발생했습니다: " + e.getMessage());
+            request.getRequestDispatcher("/WEB-INF/view/error.jsp").forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("error", "알 수 없는 오류가 발생했습니다: " + e.getMessage());
+            request.getRequestDispatcher("/WEB-INF/view/error.jsp").forward(request, response);
+        }
 		
 		
 		//2. 댓글 가져오기
 		List<Comment> commentList = commentService.getCommentList(postId, commentPage);
 		request.setAttribute("commentList", commentList);
-		
-		//3. 좋아요 가져오기
-		
 		
 		
 		request.getRequestDispatcher("/WEB-INF/view/community/post/post.jsp")

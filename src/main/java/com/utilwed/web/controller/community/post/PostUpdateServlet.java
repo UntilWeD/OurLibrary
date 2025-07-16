@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.utilwed.web.Entity.community.Post;
+import com.utilwed.web.repository.AttachmentRepository;
 import com.utilwed.web.repository.PostRepository;
 import com.utilwed.web.service.post.PostService;
 
@@ -21,16 +22,21 @@ public class PostUpdateServlet extends HttpServlet{
 	@Override
 	public void init() throws ServletException {
 		PostRepository postRepository = new PostRepository();
-		this.postService = new PostService(postRepository);
+		AttachmentRepository attachmentRepository = new AttachmentRepository();
+		this.postService = new PostService(postRepository, attachmentRepository);
 	}
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		int categoryId = Integer.parseInt(request.getParameter("c"));
 		int postId = Integer.parseInt(request.getParameter("po"));
-		
-		Post post = postService.getPost(categoryId, postId);
-		request.setAttribute("po", post);
+		try {
+			Post post = postService.getPost(categoryId, postId);
+			request.setAttribute("po", post);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		
 		
 		

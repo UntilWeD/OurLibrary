@@ -12,8 +12,20 @@
 <body>
 	<div>
 		<h2>제목 : ${po.title}</h2> <h4>작성자 : ${po.nickname }</h4>
+     	<div class="attachments">
+            <h5>첨부 파일</h5>
+            <ul>
+                <c:forEach var="attachment" items="${po.attachments}">
+                    <li>
+                        <a href="${pageContext.request.contextPath}/category/list/post/file/download?filename=${attachment.uniqueFilename}&originalName=${attachment.originalFilename}">
+                            ${attachment.originalFilename} (<fmt:formatNumber value="${attachment.fileSize / 1024}" maxFractionDigits="2"/> KB)
+                        </a>
+                    </li>
+                </c:forEach>
+            </ul>
+        </div>
 		<p> 내용 : ${po.content}</p>
-		<p>작성일 : ${po.createdAt }</p>
+		<p>작성일 : ${po.createdAt}</p>
 		<div class="voteSection">
 			<button class="vote-button" data-post-id="${po.id}" data-vote-type="LIKE">
 			좋아요 (<span id="likeCount-${po.id}" class="like-count">${po.likeCount}</span>)</button>

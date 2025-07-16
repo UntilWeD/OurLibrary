@@ -36,6 +36,7 @@
 	                <th>ID</th>
 	                <th>제목</th>
 	                <th>작성자</th>
+	                <th>추천 / 비추천</th>
 	                <th>작성일</th>
 	                <th>조회수</th>
 	            </tr>
@@ -46,6 +47,7 @@
 	                    <td>${post.id}</td>
 	                    <td><a href="list/post?c=${param.c}&po=${post.id}&p=${param.p}&f=${param.f}&q=${param.q}">${post.title} [<span>${post.commentCount}</span>] </a></td>
 	                    <td>${post.nickname}</td>
+	                    <td>${post.likeCount} / ${post.dislikeCount}</td>
 	                    <td><fmt:formatDate value="${post.createdAt}" pattern="yyyy-MM-dd HH:mm"/></td>
 	                    <td>${post.view}</td>
 	                </tr>

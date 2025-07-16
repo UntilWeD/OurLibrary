@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.utilwed.web.repository.AttachmentRepository;
 import com.utilwed.web.repository.PostRepository;
 import com.utilwed.web.service.post.PostService;
 
@@ -19,7 +20,8 @@ public class PostDeleteServlet extends HttpServlet{
 	@Override
 	public void init() throws ServletException {
 		PostRepository postRepository = new PostRepository();
-		this.postService = new PostService(postRepository);
+		AttachmentRepository attachmentRepository = new AttachmentRepository();
+		this.postService = new PostService(postRepository, attachmentRepository);
 	}
 	
 	@Override
