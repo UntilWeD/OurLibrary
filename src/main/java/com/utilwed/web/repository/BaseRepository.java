@@ -7,7 +7,7 @@ import java.sql.SQLException;
 
 public class BaseRepository {
 	
-	protected String jdbcUrl = "jdbc:mysql://localhost:3306/ourlibrary?useSSL=false&serverTimezone=UTC";
+	protected String jdbcUrl = "jdbc:mysql://localhost:3306/ourlibrary?useSSL=false&serverTimezone=Asia/Seoul";
 	protected String dbUser = "root";
 	protected String dbPassword = "1234";
 	
@@ -20,7 +20,7 @@ public class BaseRepository {
         }
 	}
 	
-	protected Connection getConnection() throws SQLException{
+	public Connection getConnection() throws SQLException{
 		return DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
 	}
 

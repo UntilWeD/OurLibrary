@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
 import com.utilwed.web.Entity.community.VoteType;
+import com.utilwed.web.repository.BaseRepository;
 import com.utilwed.web.repository.PostRepository;
 import com.utilwed.web.repository.VoteRepository;
 import com.utilwed.web.service.VoteService;
@@ -29,7 +30,8 @@ public class SaveVoteServlet extends HttpServlet{
 	public void init() throws ServletException {
 		VoteRepository voteRepository = new VoteRepository();
 		PostRepository postRepository = new PostRepository();
-		this.voteService = new VoteService(voteRepository,postRepository);
+		BaseRepository baseRepository = new BaseRepository();
+		this.voteService = new VoteService(voteRepository,postRepository, baseRepository);
 	}
 	
 	@Override
@@ -61,6 +63,7 @@ public class SaveVoteServlet extends HttpServlet{
             // voteService.canUserVoteToday(userId) -> userId만 받는다면, 해당 유저가 '어떤' 게시물이든
             //                            하루 한 번만 투표할 수 있다는 의미가 됨.
             // 여기서는 postId도 함께 넘기는 것이 일반적인 '게시물별 좋아요 제한'에 맞음.
+
             if (!voteService.canUserVoteToday(userId)) { // canUserVoteToday가 '가능하면 true'라고 가정
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN); // 403 Forbidden
                 out.print(gson.toJson(Map.of("message", "이 게시물에는 하루에 한 번만 좋아요를 누를 수 있습니다.")));

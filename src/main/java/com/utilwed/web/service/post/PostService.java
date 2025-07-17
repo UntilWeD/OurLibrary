@@ -4,6 +4,7 @@ package com.utilwed.web.service.post;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,6 +34,7 @@ public class PostService {
 	private final String BASE_UPLOAD_DIR = "C:/WORKSHOP/Projects/EclipseWorkSpace/OurLibrary";
 	
 	public int savePost(Post post, Collection<Part> fileParts, int categoryId) throws Exception{
+		
 		// 1. 게시물을 먼저 db에 삽입하고 생성된 ID를 받아옴
 		int postId = postRepository.savePost(post);
 		if(postId <= 0) {

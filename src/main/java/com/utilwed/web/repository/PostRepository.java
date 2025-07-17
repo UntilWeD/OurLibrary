@@ -14,21 +14,7 @@ import java.util.Map;
 
 import com.utilwed.web.Entity.community.Post;
 
-public class PostRepository {
-	
-	private String jdbcUrl = "jdbc:mysql://localhost:3306/ourlibrary?useSSL=false&serverTimezone=UTC";
-	private String dbUser = "root";
-	private String dbPassword = "1234";
-	
-	public PostRepository() {
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-		}catch (ClassNotFoundException e) {
-            System.err.println("MySQL JDBC Driver not found. Make sure mysql-connector-j-8.0.x.jar is in WEB-INF/lib.");
-            e.printStackTrace();
-            throw new RuntimeException("Failed to load JDBC driver", e);
-        }
-	}
+public class PostRepository extends BaseRepository{
 	
 	public int savePost(Post post) {
 		String sql = "INSERT INTO post (title, content, nickname, user_id, category_id) " +
@@ -291,10 +277,10 @@ public class PostRepository {
 			}
 	}
 
-	public void decrementCommentCount(int postId) {
+	public void decrementCommentCount(int postId, Connection connection) {
 		String sql = "UPDATE post SET comment_count = comment_count - 1 WHERE id = ?";
 		
-		try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
+		try (Connection conn = connection;
 				PreparedStatement pstmt = conn.prepareStatement(sql);){
 				pstmt.setInt(1, postId);
 				
@@ -313,53 +299,51 @@ public class PostRepository {
 		
 	}
 
-	public void incrementLikeCount(int postId) {
+	public void incrementLikeCount(int postId, Connection conn) {
 		String sql = "UPDATE post SET like_count = like_count + 1 WHERE id = ?";
 		
-		try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
-				PreparedStatement pstmt = conn.prepareStatement(sql);){
-				pstmt.setInt(1, postId);
-				
-				
-				int rowsAffected = pstmt.executeUpdate();
-	
-				if(rowsAffected > 0) {
-					return;
-				} else{
-					throw new SQLException("좋아요 수를 증가시키던 중 오류 발생");
-				}
-				
-			} catch (SQLException e) {
-				e.printStackTrace();
+		try (PreparedStatement pstmt = conn.prepareStatement(sql);){
+			pstmt.setInt(1, postId);
+			
+			
+			int rowsAffected = pstmt.executeUpdate();
+
+			if(rowsAffected > 0) {
+				return;
+			} else {
+				throw new SQLException("좋아요 수를 증가시키던 중 오류 발생");
 			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		
 	}
 	
-	public void incrementDislikeCount(int postId) {
+	public void incrementDislikeCount(int postId, Connection conn) {
 		String sql = "UPDATE post SET dislike_count = dislike_count + 1 WHERE id = ?";
 		
-		try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
-				PreparedStatement pstmt = conn.prepareStatement(sql);){
-				pstmt.setInt(1, postId);
-				
-				
-				int rowsAffected = pstmt.executeUpdate();
-	
-				if(rowsAffected > 0) {
-					return;
-				} else{
-					throw new SQLException("싫어요 수를 증가시키던 중 오류 발생");
-				}
-				
-			} catch (SQLException e) {
-				e.printStackTrace();
+		try (PreparedStatement pstmt = conn.prepareStatement(sql);){
+			pstmt.setInt(1, postId);
+			
+			
+			int rowsAffected = pstmt.executeUpdate();
+
+			if(rowsAffected > 0) {
+				return;
+			} else {
+				throw new SQLException("싫어요 수를 증가시키던 중 오류 발생");
 			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		
 	}
 
 	public Map<String, Integer> getVotesCount(int postId) {
 		String sql = "SELECT like_count, dislike_count FROM post WHERE id = ?";
-		try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
+		try (Connection conn = getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(sql);){
 				pstmt.setInt(1, postId);
 				

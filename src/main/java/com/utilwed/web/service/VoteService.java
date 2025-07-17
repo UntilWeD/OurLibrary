@@ -1,11 +1,14 @@
 package com.utilwed.web.service;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.Map;
 
 import com.utilwed.web.Entity.community.VoteType;
+import com.utilwed.web.repository.BaseRepository;
 import com.utilwed.web.repository.PostRepository;
 import com.utilwed.web.repository.VoteRepository;
 
@@ -13,19 +16,43 @@ public class VoteService {
 
 	private VoteRepository voteRepository;
 	private PostRepository postRepository;
+	private BaseRepository baseRepository;
 
-	public VoteService(VoteRepository voteRepository, PostRepository postRepository) {
+	
+	
+	public VoteService(VoteRepository voteRepository, PostRepository postRepository, BaseRepository baseRepository) {
 		this.voteRepository = voteRepository;
 		this.postRepository = postRepository;
+		this.baseRepository = baseRepository;
 	}
-	
-	public int saveVote(int userId,int postId, VoteType voteType) {
-		if(voteType.name() == "LIKE")
-			postRepository.incrementLikeCount(postId);
-		else
-			postRepository.incrementDislikeCount(postId);
-		
-		return voteRepository.saveVote(userId, postId, voteType);
+
+	public int saveVote(int userId,int postId, VoteType voteType) throws SQLException {
+		Connection conn = null;
+		int savedVoteId = -1;
+		try {
+			conn = baseRepository.getConnection();
+			conn.setAutoCommit(false); // 트랜잭션 시작
+			
+			// 1. 투표 정보 업데이트
+			if(voteType.name().equals("LIKE"))
+				postRepository.incrementLikeCount(postId, conn);
+			else
+				postRepository.incrementDislikeCount(postId, conn);
+			
+			savedVoteId = voteRepository.saveVote(userId, postId, voteType, conn);
+			
+			conn.commit();
+			
+		} catch (Exception e) {
+			conn.rollback();
+			
+		} finally {
+			conn.setAutoCommit(true);
+			conn.close();
+			
+		}
+		return savedVoteId;
+			
 	}
 	
 	public Map<String, Integer> getVoteCount(int postId){
@@ -44,7 +71,6 @@ public class VoteService {
         LocalDate lastVoteLocalDate = lastVoteDate.toInstant()
         										.atZone(ZoneId.systemDefault()) // 시스템 기본 시간대 사용
         										.toLocalDate(); // 날짜부분만 추출
-        
 		return !today.isEqual(lastVoteLocalDate);
 	}
 	

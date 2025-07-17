@@ -23,8 +23,9 @@
         	<textarea id="content" name="content" rows="10" cols="50" required>${po.content}</textarea><br><br>
         </div>
         <div id="existingFilesList">
-		    <c:forEach var="att" items="${po.attachments}"> <%-- ${notice.attachments}는 Notice 객체 내 첨부파일 List --%>
-		        <div id="file_${att.id}"> <%-- 각 파일 div에 고유 ID 부여 --%>
+        	<h3>기존 첨부 파일:</h3>
+		    <c:forEach var="att" items="${po.attachments}"> 
+		        <div id="file_${att.id}"> 
 		            <span>${att.originalFilename}</span>
 		            <input type="hidden" name="existingAttachmentIds" value="${att.id}"> <%-- 이 파일의 ID를 hidden 필드로 전송 --%>
 		            <button type="button" onclick="removeExistingFile(${att.id})">삭제</button>
@@ -32,9 +33,11 @@
 		        </div>
 		    </c:forEach>
 		</div>
+		
 		<div>
-            <label for="file">첨부 파일:</label>
-            <input type="file" id="file" name="file" multiple> <%-- multiple 속성으로 여러 파일 업로드 가능 --%>
+            <label for="file">새 첨부 파일:</label>
+            <input type="file" id="file" name="file" multiple>
+            <div id="newlySelectedFiles"></div>
         </div>
         
 		<button type="submit">작성 완료</button>
@@ -45,3 +48,4 @@
 </body>
 <script src="/js/community/attachment-edit.js"></script>
 </html>
+

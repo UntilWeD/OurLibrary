@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.utilwed.web.repository.BaseRepository;
 import com.utilwed.web.repository.CommentRepository;
 import com.utilwed.web.repository.PostRepository;
 import com.utilwed.web.service.CommentService;
@@ -22,7 +23,8 @@ public class CommentDeleteServlet extends HttpServlet{
 	public void init() throws ServletException {
 		CommentRepository commentRepository = new CommentRepository();	
 		PostRepository postRepository = new PostRepository();
-		this.commentService = new CommentService(commentRepository, postRepository);
+		BaseRepository baseRepository = new BaseRepository();
+		this.commentService = new CommentService(commentRepository, postRepository, baseRepository);
 	}
 	
 	@Override
