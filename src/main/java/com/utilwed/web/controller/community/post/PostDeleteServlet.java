@@ -30,10 +30,18 @@ public class PostDeleteServlet extends HttpServlet{
 		int postId = Integer.parseInt(request.getParameter("po"));
 		int categoryId = Integer.parseInt(request.getParameter("c"));
 		
-		int deletedRow = postService.deletePost(postId);
-		
-		if(deletedRow > 0) {
-			response.sendRedirect("/category/list?c=" + categoryId + "&p=1");
-		}
+		try {
+			int deletedRow = postService.deletePost(postId);
+			
+			if(deletedRow > 0) {
+				response.sendRedirect("/category/list?c=" + categoryId + "&p=1");
+			}
+		} catch (NumberFormatException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "유효하지 않은 게시물 ID입니다.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("error", "게시물 삭제 중 오류가 발생했습니다: " + e.getMessage());
+            request.getRequestDispatcher("/WEB-INF/view/error.jsp").forward(request, response);
+        }
 	}
 }

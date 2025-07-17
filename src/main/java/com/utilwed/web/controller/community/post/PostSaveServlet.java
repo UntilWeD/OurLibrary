@@ -55,7 +55,7 @@ public class PostSaveServlet extends HttpServlet{
 		String nickname = (String) session.getAttribute("loggedInUser");
 		String title = null;
 		String content = null;
-		int categoryId = 1;
+		int categoryId = 0;
 		
 		List<Part> fileParts = new ArrayList<Part>();
 		
@@ -83,7 +83,7 @@ public class PostSaveServlet extends HttpServlet{
 				case "categoryId" : categoryId = Integer.parseInt(value); break;
 
 				default:
-					throw new IllegalArgumentException("Unexpected value: " + name);
+					
 				}
 			}
 		}

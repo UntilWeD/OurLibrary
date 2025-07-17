@@ -81,4 +81,14 @@ public class AttachmentRepository extends BaseRepository{
 		return attachment;
 	}
 	
+	public void deleteAttachmentById(int id) throws SQLException{
+		String sql = "DELETE FROM attachment WHERE id = ?";
+		
+		try(Connection conn = getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(sql)){
+			pstmt.setInt(1, id);
+			pstmt.executeUpdate();
+		}
+	}
+	
 }
