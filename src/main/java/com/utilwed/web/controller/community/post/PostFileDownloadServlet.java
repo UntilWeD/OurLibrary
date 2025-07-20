@@ -15,8 +15,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.utilwed.web.Entity.community.Attachment;
 import com.utilwed.web.repository.AttachmentRepository;
+import com.utilwed.web.repository.BaseRepository;
 import com.utilwed.web.repository.PostRepository;
 import com.utilwed.web.service.post.PostService;
+
 
 @WebServlet("/category/list/post/file/download")
 public class PostFileDownloadServlet extends HttpServlet{
@@ -26,15 +28,16 @@ public class PostFileDownloadServlet extends HttpServlet{
 	@Override
 	public void init() throws ServletException {
 		PostRepository postRepository = new PostRepository();
+		BaseRepository baseRepository = new BaseRepository();
 		AttachmentRepository attachmentRepository = new AttachmentRepository();
-		this.postService = new PostService(postRepository, attachmentRepository);
+		this.postService = new PostService(postRepository, attachmentRepository, baseRepository);
 	}
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String uniqueFilename = request.getParameter("filename");
 		
 		try {
+			String uniqueFilename = request.getParameter("filename");
 			Attachment attachment = postService.getAttachmentByUniqueFilename(uniqueFilename);
 			String filePathOnDisk = postService.getActualFilePathForDownload(uniqueFilename);
 			
@@ -70,7 +73,11 @@ public class PostFileDownloadServlet extends HttpServlet{
 		} catch (SQLException e) {
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "데이터베이스 오류로 파일을 다운로드할 수 없습니다.");
-        } catch (Exception e) {
+        } catch (IOException e) {
+        	e.printStackTrace();
+			// TODO: handle exception
+        	 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "존재 하지 않는 이름의 파일로 파일에 접근할 수 없습니다. " + e.getMessage());
+		} catch (Exception e) {
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "파일 다운로드 중 알 수 없는 오류 발생: " + e.getMessage());
         }

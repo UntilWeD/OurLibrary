@@ -1,7 +1,6 @@
 package com.utilwed.web.repository;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,7 +25,7 @@ public class VoteRepository extends BaseRepository{
 //        }
 //	}
 
-	public int saveVote(int userId, int postId, VoteType voteType, Connection conn) {
+	public int saveVote(int userId, int postId, VoteType voteType, Connection conn) throws SQLException{
 		String sql = "INSERT INTO vote(user_id, post_id, vote_type) VALUES(?, ?, ?)";
 		
 		try(
@@ -46,16 +45,13 @@ public class VoteRepository extends BaseRepository{
 					}
 				}
 				
-			} catch (SQLException e) {
-				// TODO: handle exception
-				e.printStackTrace();
-			}
+			} 
 			
-			return -1;
+		return -1;
 		
 	}
 
-	public Date getCreatedAtByUserId(int userId) {
+	public Date getCreatedAtByUserId(int userId)  throws SQLException{
 		String sql = "SELECT created_at FROM vote WHERE user_id = ? ORDER BY created_at DESC LIMIT 1";
 		
 		try (Connection conn = getConnection();
@@ -71,8 +67,6 @@ public class VoteRepository extends BaseRepository{
 				}
 			}
 			
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
 		
 		

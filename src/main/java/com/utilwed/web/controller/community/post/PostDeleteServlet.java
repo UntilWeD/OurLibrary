@@ -1,6 +1,7 @@
 package com.utilwed.web.controller.community.post;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.utilwed.web.repository.AttachmentRepository;
+import com.utilwed.web.repository.BaseRepository;
 import com.utilwed.web.repository.PostRepository;
 import com.utilwed.web.service.post.PostService;
 
@@ -20,28 +22,34 @@ public class PostDeleteServlet extends HttpServlet{
 	@Override
 	public void init() throws ServletException {
 		PostRepository postRepository = new PostRepository();
+		BaseRepository baseRepository = new BaseRepository();
 		AttachmentRepository attachmentRepository = new AttachmentRepository();
-		this.postService = new PostService(postRepository, attachmentRepository);
+		this.postService = new PostService(postRepository, attachmentRepository, baseRepository);
 	}
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		int postId = Integer.parseInt(request.getParameter("po"));
-		int categoryId = Integer.parseInt(request.getParameter("c"));
-		
 		try {
-			int deletedRow = postService.deletePost(postId);
+			int postId = Integer.parseInt(request.getParameter("po"));
+			int categoryId = Integer.parseInt(request.getParameter("c"));
 			
-			if(deletedRow > 0) {
+			if(postService.deletePost(postId)> 0) {
 				response.sendRedirect("/category/list?c=" + categoryId + "&p=1");
+			} else {
+				request.setAttribute("errorMessage", "DB에서 삭제하는데 오류가 생겼습니다. 해당 포스트에 오류가 있거나 ID가 존재하지 않는 포스트입니다.");
+				response.sendRedirect("/category/list/post?c=" + categoryId + "&p=" + 1 + "&po=" + postId);
 			}
+		} catch (SQLException e) {
+			throw new ServletException(this.getClass().getSimpleName() + ": DB와 관련하여 오류가 발생하였습니다. -> " + e.getMessage());
+		} catch (NullPointerException e) {
+			throw new ServletException(this.getClass().getSimpleName() + ": 입력값이 비어있습니다. -> " + e.getMessage());
 		} catch (NumberFormatException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "유효하지 않은 게시물 ID입니다.");
-        } catch (Exception e) {
-            e.printStackTrace();
-            request.setAttribute("error", "게시물 삭제 중 오류가 발생했습니다: " + e.getMessage());
-            request.getRequestDispatcher("/WEB-INF/view/error.jsp").forward(request, response);
-        }
-	}
+			throw new ServletException(this.getClass().getSimpleName() + ": 입력값이 비어있거나 숫자변환 중 오류가 발생하였습니다. -> "+ e.getMessage());
+		} catch (Exception e) { 
+			throw new ServletException(this.getClass().getSimpleName() + ": 알 수 없는 오류가 발생하였습니다. -> "+ e.getMessage());
+		}
+		
+		
+	}	
 }

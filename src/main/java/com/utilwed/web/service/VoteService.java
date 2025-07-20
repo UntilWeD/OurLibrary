@@ -29,6 +29,7 @@ public class VoteService {
 	public int saveVote(int userId,int postId, VoteType voteType) throws SQLException {
 		Connection conn = null;
 		int savedVoteId = -1;
+		
 		try {
 			conn = baseRepository.getConnection();
 			conn.setAutoCommit(false); // 트랜잭션 시작
@@ -43,9 +44,9 @@ public class VoteService {
 			
 			conn.commit();
 			
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			conn.rollback();
-			
+			throw e;
 		} finally {
 			conn.setAutoCommit(true);
 			conn.close();
@@ -59,7 +60,7 @@ public class VoteService {
 		return postRepository.getVotesCount(postId);
 	}
 
-	public boolean canUserVoteToday(int userId) {
+	public boolean canUserVoteToday(int userId) throws SQLException{
 		Date lastVoteDate = voteRepository.getCreatedAtByUserId(userId);
 		// 2. 마지막 투표 기록이 없는 경우: 투표 가능
         if (lastVoteDate == null) {

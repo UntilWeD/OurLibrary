@@ -84,13 +84,9 @@ document.querySelector('form').addEventListener('submit', function(event) {
 		method: form.method,
 		body: formData
 	})	
-	.then(response => {
-		if(response.ok){
-			window.location.href= '/category/list?c=1&p=1';
-		} else {
-			// 오류 처리 
-			return response.text().then(text => {throw new Error(text )});
-		}
+	.then(response => response.json()) 
+	.then(data => {
+		window.location.href = data.redirectUrl;
 	})
 	.catch(error => {
 		console.error('Error:', error);

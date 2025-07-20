@@ -16,12 +16,11 @@ import com.utilwed.web.Entity.community.Post;
 
 public class PostRepository extends BaseRepository{
 	
-	public int savePost(Post post) {
+	public int savePost(Post post, Connection conn) {
 		String sql = "INSERT INTO post (title, content, nickname, user_id, category_id) " +
 					"VALUES(?, ?, ?, ?, ?)";
 
-		try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
-			PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);){
+		try (PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);){
 			pstmt.setString(1, post.getTitle());
 			pstmt.setString(2, post.getContent());
 			pstmt.setString(3, post.getNickname());
@@ -191,44 +190,42 @@ public class PostRepository extends BaseRepository{
 		
 	}
 
-	public boolean updatePost(Post post) {
+	public boolean updatePost(Post post, Connection conn) {
 		String sql = "UPDATE post SET title = ?, content = ? WHERE user_id = ? AND id = ?";
 		
-		try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
-				PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);){
-				pstmt.setString(1, post.getTitle());
-				pstmt.setString(2, post.getContent());
-				pstmt.setInt(3, post.getUserId());
-				pstmt.setInt(4, post.getId());
+		try (PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);){
+			pstmt.setString(1, post.getTitle());
+			pstmt.setString(2, post.getContent());
+			pstmt.setInt(3, post.getUserId());
+			pstmt.setInt(4, post.getId());
 				
 				
-				int rowsAffected = pstmt.executeUpdate();
-	
-				return rowsAffected > 0;
-				
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			int rowsAffected = pstmt.executeUpdate();
+
+			return rowsAffected > 0;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
 			return false;
 	}
 
-	public int deletePost(int postId) {
+	public int deletePost(int postId, Connection conn) {
 		String sql = "DELETE FROM post WHERE id = ?";
 
-		try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
-				PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);){
-				pstmt.setInt(1, postId);
+		try (PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);){
+			pstmt.setInt(1, postId);
 
-				
-				
-				int rowsAffected = pstmt.executeUpdate();
-	
-				return rowsAffected;
-				
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			
+			
+			int rowsAffected = pstmt.executeUpdate();
+
+			return rowsAffected;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
 		return -1;
 
@@ -277,25 +274,24 @@ public class PostRepository extends BaseRepository{
 			}
 	}
 
-	public void decrementCommentCount(int postId, Connection connection) {
+	public void decrementCommentCount(int postId, Connection conn) {
 		String sql = "UPDATE post SET comment_count = comment_count - 1 WHERE id = ?";
 		
-		try (Connection conn = connection;
-				PreparedStatement pstmt = conn.prepareStatement(sql);){
-				pstmt.setInt(1, postId);
-				
-				
-				int rowsAffected = pstmt.executeUpdate();
-	
-				if(rowsAffected > 0) {
-					return;
-				} else{
-					throw new SQLException("댓글수를 감소하던 중 오류 발생");
-				}
-				
-			} catch (SQLException e) {
-				e.printStackTrace();
+		try (PreparedStatement pstmt = conn.prepareStatement(sql);){
+			pstmt.setInt(1, postId);
+			
+			
+			int rowsAffected = pstmt.executeUpdate();
+
+			if(rowsAffected > 0) {
+				return;
+			} else{
+				throw new SQLException("댓글수를 감소하던 중 오류 발생");
 			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		
 	}
 

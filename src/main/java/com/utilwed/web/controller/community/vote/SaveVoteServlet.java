@@ -3,6 +3,7 @@ package com.utilwed.web.controller.community.vote;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,30 +39,29 @@ public class SaveVoteServlet extends HttpServlet{
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    response.setContentType("application/json");
 	    response.setCharacterEncoding("UTF-8");
+	    PrintWriter out = null;
 	    
-		PrintWriter out = response.getWriter();
-		HttpSession session = request.getSession(false);
-		int userId = (int)session.getAttribute("userId");
-		
-		//1. 요청 본문 (JSON) 읽기
-		StringBuilder sb = new StringBuilder(); 
-		BufferedReader reader = request.getReader();
-		String line;
-		while((line = reader.readLine()) != null) {
-			sb.append(line);
-		}
-		String requestBody = sb.toString();
-		
-		//2.JSON 파싱
-		Map<String, Object> requestData = gson.fromJson(requestBody, HashMap.class);
-		int postId = ((Double) requestData.get("postId")).intValue(); // JSON 숫자는 기본적으로 Double로 파싱됨
-		String voteTypeStr = (String) requestData.get("voteType");
-		VoteType voteType = VoteType.valueOf(voteTypeStr);
-		
-		try {
-            // 좋아요 가능 여부 검증 (userId와 postId를 모두 넘겨야 해당 게시물에 대한 검증이 정확)
-            // voteService.canUserVoteToday(userId) -> userId만 받는다면, 해당 유저가 '어떤' 게시물이든
-            //                            하루 한 번만 투표할 수 있다는 의미가 됨.
+	    try {
+			out = response.getWriter();
+			HttpSession session = request.getSession(false);
+			int userId = (int)session.getAttribute("userId");
+			
+			//1. 요청 본문 (JSON) 읽기
+			StringBuilder sb = new StringBuilder(); 
+			BufferedReader reader = request.getReader();
+			String line;
+			while((line = reader.readLine()) != null) {
+				sb.append(line);
+			}
+			String requestBody = sb.toString();
+			
+			//2.JSON 파싱
+			Map<String, Object> requestData = gson.fromJson(requestBody, HashMap.class);
+			int postId = ((Double) requestData.get("postId")).intValue(); // JSON 숫자는 기본적으로 Double로 파싱됨
+			String voteTypeStr = (String) requestData.get("voteType");
+			VoteType voteType = VoteType.valueOf(voteTypeStr);
+			
+			
             // 여기서는 postId도 함께 넘기는 것이 일반적인 '게시물별 좋아요 제한'에 맞음.
 
             if (!voteService.canUserVoteToday(userId)) { // canUserVoteToday가 '가능하면 true'라고 가정
@@ -73,12 +73,14 @@ public class SaveVoteServlet extends HttpServlet{
 			
 			Map<String, Integer> responseMap = voteService.getVoteCount(postId);
 			out.print(gson.toJson(responseMap));
-		} catch (Exception e) {
-			// 5. 실패응답
+			
+			// AJAX 요청의 경우 어떻게 처리할지..
+	    } catch (Exception e) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);;
 			out.print(gson.toJson(Map.of("message", e.getMessage())));
 			e.printStackTrace();
 		}
+	    
 	}
 
 }

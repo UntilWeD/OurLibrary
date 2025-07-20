@@ -32,7 +32,6 @@ public class CommentService {
 			savedCommentId = commentRepository.saveComment(comment);
 			postRepository.updatePostCommentCount(postId);
 			
-			
 			conn.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -53,9 +52,25 @@ public class CommentService {
 		return commentRepository.updateComment(commentId, content);
 	}
 	
-	public int deleteComment(int commentId, int postId) {
-		int affectedRows = commentRepository.deleteComment(commentId);
-		postRepository.decrementCommentCount(postId);
+	public int deleteComment(int commentId, int postId) throws SQLException{
+		int affectedRows = -1;
+		Connection conn = null;
+		try {
+			conn = baseRepository.getConnection();
+			conn.setAutoCommit(false);
+			
+			affectedRows = commentRepository.deleteComment(commentId, conn);
+			postRepository.decrementCommentCount(postId, conn);	
+			
+			conn.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+			conn.rollback();
+		} finally {
+			conn.setAutoCommit(true);
+			conn.close();
+		}
+
 		return affectedRows;
 	}
 	

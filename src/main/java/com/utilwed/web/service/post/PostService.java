@@ -8,7 +8,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,71 +16,90 @@ import javax.servlet.http.Part;
 import com.utilwed.web.Entity.community.Attachment;
 import com.utilwed.web.Entity.community.Post;
 import com.utilwed.web.repository.AttachmentRepository;
+import com.utilwed.web.repository.BaseRepository;
 import com.utilwed.web.repository.PostRepository;
 
 public class PostService {
 
 	private PostRepository postRepository;
 	private AttachmentRepository attachmentRepository;
+	private BaseRepository baseRepository;
 
-	
-	
-	public PostService(PostRepository postRepository, AttachmentRepository attachmentRepository) {
+	public PostService(PostRepository postRepository, AttachmentRepository attachmentRepository,
+			BaseRepository baseRepository) {
 		this.postRepository = postRepository;
 		this.attachmentRepository = attachmentRepository;
+		this.baseRepository = baseRepository;
 	}
 
 	private final String BASE_UPLOAD_DIR = "C:/WORKSHOP/Projects/EclipseWorkSpace/OurLibrary";
 	
 	public int savePost(Post post, Collection<Part> fileParts, int categoryId) throws Exception{
 		
-		// 1. 게시물을 먼저 db에 삽입하고 생성된 ID를 받아옴
-		int postId = postRepository.savePost(post);
-		if(postId <= 0) {
-			throw new RuntimeException("게시물 등록에 실패했습니다 - ID 반환 실패");
-		}
-		post.setId(postId);
+		int postId = -1;
+		Connection conn = null;
 		
-		// 2. 파일 저장 경로 생성
-		String fileSaveRelativePath = File.separator + "post" + File.separator + postId; 
-		String fileSaveAbsoulutePath = BASE_UPLOAD_DIR + fileSaveRelativePath;
-		
-		File uploadDir = new File(fileSaveAbsoulutePath);
-		if(!uploadDir.exists()) {
-			uploadDir.mkdirs(); // 디렉토리가 없으면 생성
-		}
-		
-		// 3. 첨부 파일 처리 및 DB 저장
-		for(Part p : fileParts) {
-			// isFormFiled()가 false이고, 파일명이 버이있지 않으며, 파일 크기가 0보다 커야 실제파일
-			String originalFilename = p.getSubmittedFileName();
-			if(originalFilename != null && !originalFilename.isEmpty() && p.getSize() > 0) { // 파일 part인지 확인
-				
-				String fileExtension = "";
-				int dotIndex = originalFilename.lastIndexOf('.');
-				if(dotIndex >0 && dotIndex < originalFilename.length() -1) {
-					fileExtension = originalFilename.substring(dotIndex);
+		try {
+			conn = baseRepository.getConnection();
+			conn.setAutoCommit(false);
+			
+			// 1. 게시물을 먼저 db에 삽입하고 생성된 ID를 받아옴
+			postId = postRepository.savePost(post, conn);
+			if(postId <= 0) {
+				throw new RuntimeException("게시물 등록에 실패했습니다 - ID 반환 실패");
+			}
+			post.setId(postId);
+			
+			// 2. 파일 저장 경로 생성
+			String fileSaveRelativePath = File.separator + "post" + File.separator + postId; 
+			String fileSaveAbsoulutePath = BASE_UPLOAD_DIR + fileSaveRelativePath;
+			
+			File uploadDir = new File(fileSaveAbsoulutePath);
+			if(!uploadDir.exists()) {
+				uploadDir.mkdirs(); // 디렉토리가 없으면 생성
+			}
+			
+			// 3. 첨부 파일 처리 및 DB 저장
+			for(Part p : fileParts) {
+				// isFormFiled()가 false이고, 파일명이 비어있지 않으며, 파일 크기가 0보다 커야 실제파일
+				String originalFilename = p.getSubmittedFileName();
+				if(originalFilename != null && !originalFilename.isEmpty() && p.getSize() > 0) { // 파일 part인지 확인
+					
+					String fileExtension = "";
+					int dotIndex = originalFilename.lastIndexOf('.');
+					if(dotIndex >0 && dotIndex < originalFilename.length() -1) {
+						fileExtension = originalFilename.substring(dotIndex);
+					}
+					String uniqueFilename = UUID.randomUUID().toString() + fileExtension;
+					String filePathOnDisk = fileSaveAbsoulutePath + File.separator + uniqueFilename;
+					
+					try {
+						p.write(filePathOnDisk);
+					} catch (IOException e) {
+						// TODO: handle exception
+	                    System.err.println("파일 저장 실패: " + originalFilename + " - " + e.getMessage());
+	                    throw new IOException("파일 저장 중 오류 발생", e);
+					}
+					
+					Attachment attachment = new Attachment();
+					attachment.setPostId(postId);
+					attachment.setOriginalFilename(originalFilename);
+					attachment.setUniqueFilename(uniqueFilename);
+					attachment.setFilePath(fileSaveRelativePath + File.separator + uniqueFilename); // DB에 저장되는 저장 파일의 경로는 상대경로만
+					attachment.setFileSize(p.getSize());
+					
+					attachmentRepository.insertAttachment(attachment, conn);
+					
 				}
-				String uniqueFilename = UUID.randomUUID().toString() + fileExtension;
-				String filePathOnDisk = fileSaveAbsoulutePath + File.separator + uniqueFilename;
-				
-				try {
-					p.write(filePathOnDisk);
-				} catch (IOException e) {
-					// TODO: handle exception
-                    System.err.println("파일 저장 실패: " + originalFilename + " - " + e.getMessage());
-                    throw new IOException("파일 저장 중 오류 발생", e);
-				}
-				
-				Attachment attachment = new Attachment();
-				attachment.setPostId(postId);
-				attachment.setOriginalFilename(originalFilename);
-				attachment.setUniqueFilename(uniqueFilename);
-				attachment.setFilePath(fileSaveRelativePath + File.separator + uniqueFilename); // DB에 저장되는 저장 파일의 경로는 상대경로만
-				attachment.setFileSize(p.getSize());
-				
-				attachmentRepository.insertAttachment(attachment);
-			}			
+			}
+			
+			conn.commit();
+		} catch (SQLException e) {
+			conn.rollback();
+			throw new SQLException("post 엔터티를 저장하던 중 에러가 발생하였습니다.");
+		} finally {
+			conn.setAutoCommit(false);
+			conn.close();
 		}
 		
 		return postId;
@@ -133,107 +151,144 @@ public class PostService {
 	 */
 	public boolean updatePost(Post post, Collection<Part> fileParts, List<Integer> existingFileIds) throws Exception {
 
+		boolean postUpdated = false;
+		Connection conn = null;
+		
+		try {
+			conn = baseRepository.getConnection();
+			conn.setAutoCommit(false);
+			
+			
+			// 1. db에서 불러온 파일 이름 리스트
+			List<Attachment> attachments = attachmentRepository.getAttachmentsByPostId(post.getId());
+			List<Integer> dbAttachmentFileIds = new ArrayList<Integer>();
+			for(Attachment att : attachments) {
+				dbAttachmentFileIds.add(att.getId());
+			}
+			
+			// 2. 포스트에서 리스트에 변화가 생겼는지 값을 체크
+			List<Integer> deletedAttachmentIds = new ArrayList<Integer>();
+			for(int id : dbAttachmentFileIds) {
+				if(!existingFileIds.contains(id)) {
+					deletedAttachmentIds.add(id);
+				}
+			}
+			
+			
+			
+			// 3. 삭제되어야할 파일 deletedAttachments && 추가해야할 파일들 AddedAttachments
+			// 삭제 
+			// DB 데이터 && 물리 파일 삭제
+			for(Attachment att : attachments) {
+				if(deletedAttachmentIds.contains(att.getId())) {
+					// db에서 첨부파일 정보 삭제
+					attachmentRepository.deleteAttachmentById(att.getId(), conn);
+					
+					// 물리 파일 삭제
+					deleteSingleFile(att);
+				}
+			}
+			
+			// DB에 데이터 저장 && 로컬에 물리 파일 추가 
+			String fileSaveRelativePath = File.separator + "post" + File.separator + post.getId(); 
+			String fileSaveAbsoulutePath = BASE_UPLOAD_DIR + fileSaveRelativePath;
+			
+			File uploadDir = new File(fileSaveAbsoulutePath);
+			if(!uploadDir.exists()) {
+				uploadDir.mkdirs(); 
+			}
+			
+			for(Part p : fileParts) {
+				String originalFilename = p.getSubmittedFileName();
+				if(originalFilename != null && !originalFilename.isEmpty() && p.getSize() > 0) { 
+					
+					String fileExtension = "";
+					int dotIndex = originalFilename.lastIndexOf('.');
+					if(dotIndex >0 && dotIndex < originalFilename.length() -1) {
+						fileExtension = originalFilename.substring(dotIndex);
+					}
+					String uniqueFilename = UUID.randomUUID().toString() + fileExtension;
+					String filePathOnDisk = fileSaveAbsoulutePath + File.separator + uniqueFilename;
+					
+					
+					// db 저장
+					Attachment attachment = new Attachment();
+					attachment.setPostId(post.getId());
+					attachment.setOriginalFilename(originalFilename);
+					attachment.setUniqueFilename(uniqueFilename);
+					attachment.setFilePath(fileSaveRelativePath + File.separator + uniqueFilename); // DB에 저장되는 저장 파일의 경로는 상대경로만
+					attachment.setFileSize(p.getSize());
+					
+					attachmentRepository.insertAttachment(attachment, conn);
+					
+					// 물리 파일 저장
+					try {
+						p.write(filePathOnDisk);
+					} catch (IOException e) {
+						// TODO: handle exception
+	                    System.err.println("파일 저장 실패: " + originalFilename + " - " + e.getMessage());
+	                    throw new IOException("파일 저장 중 오류 발생", e);
+					}
+					
 
-		
-		
-		// 1. db에서 불러온 파일 이름 리스트
-		List<Attachment> attachments = attachmentRepository.getAttachmentsByPostId(post.getId());
-		List<Integer> dbAttachmentFileIds = new ArrayList<Integer>();
-		for(Attachment att : attachments) {
-			dbAttachmentFileIds.add(att.getId());
-		}
-		
-		// 2. 포스트에서 리스트에 변화가 생겼는지 값을 체크
-		List<Integer> deletedAttachmentIds = new ArrayList<Integer>();
-		for(int id : dbAttachmentFileIds) {
-			if(!existingFileIds.contains(id)) {
-				deletedAttachmentIds.add(id);
+				}			
 			}
+			
+			
+			
+			postUpdated = postRepository.updatePost(post, conn);
+			
+			conn.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+			conn.rollback();
+		} finally {
+			conn.setAutoCommit(false);
+			conn.close();
 		}
 		
-		
-		
-		// 3. 삭제되어야할 파일 deletedAttachments && 추가해야할 파일들 AddedAttachments
-		// 삭제 
-		// DB 데이터 && 물리 파일 삭제
-		for(Attachment att : attachments) {
-			if(deletedAttachmentIds.contains(att.getId())) {
-				// db에서 첨부파일 정보 삭제
-				attachmentRepository.deleteAttachmentById(att.getId());
-				
-				// 물리 파일 삭제
-				deleteSingleFile(att);
-			}
-		}
-		
-		// 로컬에 물리 파일 추가 & DB에 데이터 저장
-		String fileSaveRelativePath = File.separator + "post" + File.separator + post.getId(); 
-		String fileSaveAbsoulutePath = BASE_UPLOAD_DIR + fileSaveRelativePath;
-		
-		File uploadDir = new File(fileSaveAbsoulutePath);
-		if(!uploadDir.exists()) {
-			uploadDir.mkdirs(); 
-		}
-		
-		for(Part p : fileParts) {
-			String originalFilename = p.getSubmittedFileName();
-			if(originalFilename != null && !originalFilename.isEmpty() && p.getSize() > 0) { 
-				
-				String fileExtension = "";
-				int dotIndex = originalFilename.lastIndexOf('.');
-				if(dotIndex >0 && dotIndex < originalFilename.length() -1) {
-					fileExtension = originalFilename.substring(dotIndex);
-				}
-				String uniqueFilename = UUID.randomUUID().toString() + fileExtension;
-				String filePathOnDisk = fileSaveAbsoulutePath + File.separator + uniqueFilename;
-				
-				try {
-					p.write(filePathOnDisk);
-				} catch (IOException e) {
-					// TODO: handle exception
-                    System.err.println("파일 저장 실패: " + originalFilename + " - " + e.getMessage());
-                    throw new IOException("파일 저장 중 오류 발생", e);
-				}
-				
-				Attachment attachment = new Attachment();
-				attachment.setPostId(post.getId());
-				attachment.setOriginalFilename(originalFilename);
-				attachment.setUniqueFilename(uniqueFilename);
-				attachment.setFilePath(fileSaveRelativePath + File.separator + uniqueFilename); // DB에 저장되는 저장 파일의 경로는 상대경로만
-				attachment.setFileSize(p.getSize());
-				
-				attachmentRepository.insertAttachment(attachment);
-			}			
-		}
-		
-		
-		
-		return postRepository.updatePost(post);
+		return postUpdated;
 	}
 
 	public int deletePost(int postId) throws Exception {
 		
-		// 1. 삭제할 포스트 첨부파일 정보 조회
-		List<Attachment> attachments = attachmentRepository.getAttachmentsByPostId(postId);
+		Connection conn = null;
+		int rowsEffected = -1;
 		
-		
-		// 2. DB에서 첨부파일 정보 삭제를 먼저 해야 하는가?
-		// 우선 AI는 ON DELETE CASCADE가 설정되어 있어도 명시적으로 지우는 것이 안전하고 트랜잭션 관리에 유리하다.
-		// 후에 attachment를 지우는 메서드 추가
-		
-		// 3. 포스트 삭제
-		int rowsEffected = postRepository.deletePost(postId);
-		
-		// 4. 물리적인 파일 및 폴더 삭제
-		String postFolderPath = BASE_UPLOAD_DIR + File.separator + "post" + File.separator + postId;
-		File postDir = new File(postFolderPath);
-		
-		if(postDir.exists() && postDir.isDirectory()) {
-			deleteDirectory(postDir);
-			System.out.println("게시물 폴더 삭제 완료 " + postFolderPath);
+		try {
+			conn = baseRepository.getConnection();
+			conn.setAutoCommit(false);
 			
-		} else {
-			System.out.println("삭제할 게시물 폴더가 없거나 유효하지 않습니다.: " + postFolderPath);
+			// 1. 삭제할 포스트 첨부파일 정보 조회
+			List<Attachment> attachments = attachmentRepository.getAttachmentsByPostId(postId);
+			
+			
+			// 2. DB에서 첨부파일 정보 삭제를 먼저 해야 하는가?
+			// 우선 AI는 ON DELETE CASCADE가 설정되어 있어도 명시적으로 지우는 것이 안전하고 트랜잭션 관리에 유리하다.
+			// 후에 attachment를 지우는 메서드 추가
+			
+			// 3. 포스트 삭제
+			rowsEffected = postRepository.deletePost(postId, conn);
+			
+			// 4. 물리적인 파일 및 폴더 삭제
+			String postFolderPath = BASE_UPLOAD_DIR + File.separator + "post" + File.separator + postId;
+			File postDir = new File(postFolderPath);
+			
+			if(postDir.exists() && postDir.isDirectory()) {
+				deleteDirectory(postDir);
+				System.out.println("게시물 폴더 삭제 완료 " + postFolderPath);
+				
+			} else {
+				System.out.println("삭제할 게시물 폴더가 없거나 유효하지 않습니다.: " + postFolderPath);
+			}
+			
+			conn.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+			conn.rollback();
+		} finally {
+			conn.setAutoCommit(true);
+			conn.close();
 		}
 		
 		

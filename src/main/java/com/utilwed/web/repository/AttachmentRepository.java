@@ -12,12 +12,11 @@ import com.utilwed.web.Entity.community.Attachment;
 public class AttachmentRepository extends BaseRepository{
 	
 	// 첨부파일 정보 삽입
-	public void insertAttachment(Attachment attachment) throws SQLException{
+	public void insertAttachment(Attachment attachment, Connection conn) throws SQLException{
 		String sql = "INSERT INTO attachment (post_id, original_filename, unique_filename, filepath, file_size) "
 				+ "VALUES (?, ?, ?, ?, ?)";
 		
-		try(Connection conn = getConnection();
-			PreparedStatement pstmt = conn.prepareStatement(sql)){
+		try(PreparedStatement pstmt = conn.prepareStatement(sql)){
 			pstmt.setInt(1, attachment.getPostId());
 			pstmt.setString(2, attachment.getOriginalFilename());
 			pstmt.setString(3, attachment.getUniqueFilename());
@@ -81,11 +80,10 @@ public class AttachmentRepository extends BaseRepository{
 		return attachment;
 	}
 	
-	public void deleteAttachmentById(int id) throws SQLException{
+	public void deleteAttachmentById(int id, Connection conn) throws SQLException{
 		String sql = "DELETE FROM attachment WHERE id = ?";
 		
-		try(Connection conn = getConnection();
-			PreparedStatement pstmt = conn.prepareStatement(sql)){
+		try(PreparedStatement pstmt = conn.prepareStatement(sql)){
 			pstmt.setInt(1, id);
 			pstmt.executeUpdate();
 		}

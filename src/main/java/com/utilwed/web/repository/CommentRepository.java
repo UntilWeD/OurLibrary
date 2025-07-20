@@ -108,11 +108,10 @@ public class CommentRepository extends BaseRepository{
 		return false;
 	}
 	
-	public int deleteComment(int commentId) {
+	public int deleteComment(int commentId, Connection conn) {
 		String sql = "DELETE FROM comment WHERE id = ?";
 		
-		try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
-				PreparedStatement pstmt = conn.prepareStatement(sql);){
+		try (PreparedStatement pstmt = conn.prepareStatement(sql);){
 			pstmt.setInt(1, commentId);
 			
 			int rowsAfftected = pstmt.executeUpdate();
