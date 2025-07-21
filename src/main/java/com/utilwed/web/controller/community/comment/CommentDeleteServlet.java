@@ -36,17 +36,17 @@ public class CommentDeleteServlet extends HttpServlet{
 			int commentId = Integer.parseInt(request.getParameter("commentId"));
 			
 			
-			int deleteComment = -1;
+			boolean result = false;
 			
 			// 트랜잭션 적용
-			deleteComment = commentService.deleteComment(commentId, postId);
+			result = commentService.deleteComment(commentId, postId);
 
 			
-			if (deleteComment > 0) {
+			if (result) {
 				response.sendRedirect("/category/list/post?c=" +categoryId+ "&po=" + postId);
 			} else {
-				// 오류시 오류페이지로 이동할 수 있게 후에 수정
-				response.sendRedirect("/");
+				request.setAttribute("errorMessage", this.getClass().getSimpleName() + " 댓글이 제대로 삭제되지 않았습니다.");
+				request.getRequestDispatcher("WEB-INF/view/error.jsp").forward(request, response);
 			}
 		} catch (SQLException e) {
 			throw new ServletException(this.getClass().getSimpleName() + ": DB와 관련하여 오류가 발생하였습니다. -> " + e.getMessage());

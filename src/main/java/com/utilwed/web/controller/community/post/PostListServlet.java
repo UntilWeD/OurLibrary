@@ -10,9 +10,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.utilwed.web.Entity.community.Category;
 import com.utilwed.web.Entity.community.Post;
 import com.utilwed.web.repository.AttachmentRepository;
 import com.utilwed.web.repository.BaseRepository;
+import com.utilwed.web.repository.CategoryRepository;
 import com.utilwed.web.repository.PostRepository;
 import com.utilwed.web.service.post.PostService;
 
@@ -25,8 +27,9 @@ public class PostListServlet extends HttpServlet{
 	public void init() throws ServletException {
 		PostRepository postRepository = new PostRepository();
 		BaseRepository baseRepository = new BaseRepository();
+		CategoryRepository categoryRepository = new CategoryRepository();
 		AttachmentRepository attachmentRepository = new AttachmentRepository();
-		this.postService = new PostService(postRepository, attachmentRepository, baseRepository);
+		this.postService = new PostService(postRepository, attachmentRepository, baseRepository, categoryRepository);
 	}
 	
 	@Override
@@ -63,6 +66,9 @@ public class PostListServlet extends HttpServlet{
 			int totalPostSize = postService.getPostCount(field, query, categoryId);
 			request.setAttribute("count", totalPostSize);
 			
+			//2. 카테고리 이름 가져오기
+			Category category = postService.getCategoryById(categoryId);
+			request.setAttribute("category", category);
 			
 			request.getRequestDispatcher("/WEB-INF/view/community/post/postList.jsp")
 			.forward(request, response);

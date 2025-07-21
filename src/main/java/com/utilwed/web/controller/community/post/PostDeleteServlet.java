@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.utilwed.web.repository.AttachmentRepository;
 import com.utilwed.web.repository.BaseRepository;
+import com.utilwed.web.repository.CategoryRepository;
 import com.utilwed.web.repository.PostRepository;
 import com.utilwed.web.service.post.PostService;
 
@@ -23,8 +24,9 @@ public class PostDeleteServlet extends HttpServlet{
 	public void init() throws ServletException {
 		PostRepository postRepository = new PostRepository();
 		BaseRepository baseRepository = new BaseRepository();
+		CategoryRepository categoryRepository = new CategoryRepository();
 		AttachmentRepository attachmentRepository = new AttachmentRepository();
-		this.postService = new PostService(postRepository, attachmentRepository, baseRepository);
+		this.postService = new PostService(postRepository, attachmentRepository, baseRepository, categoryRepository);
 	}
 	
 	@Override
@@ -34,7 +36,7 @@ public class PostDeleteServlet extends HttpServlet{
 			int postId = Integer.parseInt(request.getParameter("po"));
 			int categoryId = Integer.parseInt(request.getParameter("c"));
 			
-			if(postService.deletePost(postId)> 0) {
+			if(postService.deletePost(postId)) {
 				response.sendRedirect("/category/list?c=" + categoryId + "&p=1");
 			} else {
 				request.setAttribute("errorMessage", "DB에서 삭제하는데 오류가 생겼습니다. 해당 포스트에 오류가 있거나 ID가 존재하지 않는 포스트입니다.");

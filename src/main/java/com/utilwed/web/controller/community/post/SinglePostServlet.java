@@ -14,6 +14,7 @@ import com.utilwed.web.Entity.community.Comment;
 import com.utilwed.web.Entity.community.Post;
 import com.utilwed.web.repository.AttachmentRepository;
 import com.utilwed.web.repository.BaseRepository;
+import com.utilwed.web.repository.CategoryRepository;
 import com.utilwed.web.repository.CommentRepository;
 import com.utilwed.web.repository.PostRepository;
 import com.utilwed.web.service.CommentService;
@@ -30,7 +31,8 @@ public class SinglePostServlet extends HttpServlet{
 		BaseRepository baseRepository = new BaseRepository();
 		PostRepository postRepository = new PostRepository();
 		AttachmentRepository attachmentRepository = new AttachmentRepository();
-		this.postService = new PostService(postRepository, attachmentRepository, baseRepository);
+		CategoryRepository categoryRepository = new CategoryRepository();
+		this.postService = new PostService(postRepository, attachmentRepository, baseRepository, categoryRepository);
 		// 싱글톤 객체여도 상태를 저장하는 행동은 없고
 		// getConnection으로 새로운 커넥션을 반환하는 것이기에 동시성에서 문제가 될만한 건 없다.
 		CommentRepository commentRepository = new CommentRepository();

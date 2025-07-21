@@ -14,9 +14,9 @@ import com.utilwed.web.Entity.community.Comment;
 
 public class CommentRepository extends BaseRepository{
 	
-	public int saveComment(Comment comment) {
+	public int saveComment(Comment comment) throws SQLException{
 		String sql = "INSERT INTO comment (content, user_id, post_id) VALUES (?, ?, ?)";
-		try(Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
+		try(Connection conn = getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);){
 			pstmt.setString(1, comment.getContent());
 			pstmt.setInt(2, comment.getUserId());
@@ -33,15 +33,12 @@ public class CommentRepository extends BaseRepository{
 				}
 			}
 			
-		} catch (SQLException e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}
+		} 
 		
 		return -1;
 	}
 	
-	public List<Comment> getCommentList(int postId, int commentPage){
+	public List<Comment> getCommentList(int postId, int commentPage) throws SQLException{
 		String sql = "SELECT C.id, C.content, C.created_at, C.user_id, C.post_id, U.username "
 				+ "FROM comment C INNER JOIN user U "
 				+ "ON c.user_id = u.id "
@@ -79,19 +76,16 @@ public class CommentRepository extends BaseRepository{
 					}
 				}
 
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			} 
 			
 		
 		return result;
 	}
 
-	public boolean updateComment(int commentId, String content) {
+	public boolean updateComment(int commentId, String content) throws SQLException{
 		String sql = "UPDATE comment SET content = ? WHERE id = ?";
 		
-		try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
+		try (Connection conn = getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(sql);){
 			pstmt.setString(1, content);
 			pstmt.setInt(2, commentId);
@@ -108,7 +102,7 @@ public class CommentRepository extends BaseRepository{
 		return false;
 	}
 	
-	public int deleteComment(int commentId, Connection conn) {
+	public boolean deleteComment(int commentId, Connection conn) throws SQLException{
 		String sql = "DELETE FROM comment WHERE id = ?";
 		
 		try (PreparedStatement pstmt = conn.prepareStatement(sql);){
@@ -116,13 +110,10 @@ public class CommentRepository extends BaseRepository{
 			
 			int rowsAfftected = pstmt.executeUpdate();
 			
-			return rowsAfftected;
+			return rowsAfftected > 0;
 			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return -1;
+		} 
+
 	}
 
 }

@@ -7,7 +7,7 @@ import java.sql.SQLException;
 
 public class BaseRepository {
 	
-	protected String jdbcUrl = "jdbc:mysql://localhost:3306/ourlibrary?useSSL=false&serverTimezone=Asia/Seoul";
+	protected String jdbcUrl = "jdbc:mysql://localhost:3306/ourlibrary?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul";
 	protected String dbUser = "root";
 	protected String dbPassword = "1234";
 	

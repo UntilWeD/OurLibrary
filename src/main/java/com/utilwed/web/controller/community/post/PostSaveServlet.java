@@ -22,6 +22,7 @@ import javax.servlet.http.Part;
 import com.utilwed.web.Entity.community.Post;
 import com.utilwed.web.repository.AttachmentRepository;
 import com.utilwed.web.repository.BaseRepository;
+import com.utilwed.web.repository.CategoryRepository;
 import com.utilwed.web.repository.PostRepository;
 import com.utilwed.web.service.post.PostService;
 
@@ -39,8 +40,9 @@ public class PostSaveServlet extends HttpServlet{
 	public void init() throws ServletException {
 		PostRepository postRepository = new PostRepository();
 		BaseRepository baseRepository = new BaseRepository();
+		CategoryRepository categoryRepository = new CategoryRepository();
 		AttachmentRepository attachmentRepository = new AttachmentRepository();
-		this.postService = new PostService(postRepository, attachmentRepository, baseRepository);
+		this.postService = new PostService(postRepository, attachmentRepository, baseRepository, categoryRepository);
 	}
 	
 
@@ -102,7 +104,7 @@ public class PostSaveServlet extends HttpServlet{
 			);
 			
 	        int savedPostId = postService.savePost(post, fileParts, categoryId);
-	        response.sendRedirect("/category/list/post?c=" + categoryId + "&po=" + savedPostId);
+	        response.getWriter().write("{\"redirectUrl\": \"/category/list/post?c=" + categoryId + "&po=" + savedPostId + "\"}");
 			
 		} catch (SQLException e) {
 			throw new ServletException(this.getClass().getSimpleName() + ": DB와 관련하여 오류가 발생하였습니다. -> " + e.getMessage());

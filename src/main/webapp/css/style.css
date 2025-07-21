@@ -1,0 +1,44 @@
+* {
+	color: black;
+}
+
+
+/* -------- header -------- */
+
+.custom-nav {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  margin-top: 20px;
+  border: 2px solid #ccc;
+  border-radius: 12px;
+  background-color: #f8f9fa;
+  width: 80%;              /* 원하는 너비 */
+  max-width: 600px;        /* 최대 너비 제한 */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.custom-nav .nav-item {
+  flex: 1;                 /* 4분의 1씩 균등 분할 */
+  text-align: center;
+}
+
+.custom-nav .nav-link {
+  display: block;          /* a태그를 블록 요소로 */
+  width: 100%;
+  padding: 1rem;
+  font-size: 2.5rem;
+  color: #333;
+  border-radius: 12px;
+  transition: background-color 0.2s;
+}
+
+.custom-nav .nav-link:hover {
+  background-color: #e2e6ea;
+}
+
+.custom-nav .nav-link.active {
+  color: #0d6efd;
+}
+

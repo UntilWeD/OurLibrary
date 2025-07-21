@@ -23,6 +23,7 @@ import javax.servlet.http.Part;
 import com.utilwed.web.Entity.community.Post;
 import com.utilwed.web.repository.AttachmentRepository;
 import com.utilwed.web.repository.BaseRepository;
+import com.utilwed.web.repository.CategoryRepository;
 import com.utilwed.web.repository.PostRepository;
 import com.utilwed.web.service.post.PostService;
 
@@ -41,8 +42,9 @@ public class PostUpdateServlet extends HttpServlet{
 	public void init() throws ServletException {
 		PostRepository postRepository = new PostRepository();
 		BaseRepository baseRepository = new BaseRepository();
+		CategoryRepository categoryRepository = new CategoryRepository();
 		AttachmentRepository attachmentRepository = new AttachmentRepository();
-		this.postService = new PostService(postRepository, attachmentRepository, baseRepository);
+		this.postService = new PostService(postRepository, attachmentRepository, baseRepository, categoryRepository);
 	}
 	
 	@Override
@@ -71,16 +73,14 @@ public class PostUpdateServlet extends HttpServlet{
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+		String title = null;
+		String content = null;
+		int categoryId = 0;
+		int postId = 0;
 		try {
 			HttpSession session = request.getSession(false);
 			int userId = (int) session.getAttribute("userId");
 			String nickname = (String) session.getAttribute("loggedInUser");
-			
-			String title = null;
-			String content = null;
-			int categoryId = 0;
-			int postId = 0;
 			
 			
 			List<Part> newFileParts = new ArrayList<Part>();
@@ -134,18 +134,23 @@ public class PostUpdateServlet extends HttpServlet{
 			if(updated) {
 				response.getWriter().write("{\"redirectUrl\": \"/category/list/post?c=" + categoryId + "&po=" + postId + "\"}");
 			} else {
-				response.getWriter().write("{\"redirectUrl\": \"/category/list/post?c=" + categoryId + "&po=" + postId + "\"}");
+				response.getWriter().write("{\"redirectUrl\": \"/category/list/post?c=" + categoryId + "&po=" + postId + "\"}, "
+						+ "\"errorMessage\": \"제대로 수정되지 않았습니다. 잠시 후 다시 시도해주세요.\"}");
 			}
 
 		} catch (SQLException e) {
-			throw new ServletException(this.getClass().getSimpleName() + ": DB와 관련하여 오류가 발생하였습니다. -> " + e.getMessage());
+			response.getWriter().write("{\"redirectUrl\": \"/category/list/post?c=" + categoryId + "&po=" + postId + "\"}, "
+					+ "\"errorMessage\": \"DB 오류가 발생했습니다. 잠시 후 다시 시도해주세요.\"}");
 		} catch (IOException e) {
-			throw new ServletException(this.getClass().getSimpleName() + ": 파일 업로드 중 오류가 발생했습니다: -> " + e.getMessage());
+			response.getWriter().write("{\"redirectUrl\": \"/category/list/post?c=" + categoryId + "&po=" + postId + "\"}, "
+					+ "\"errorMessage\": \"입력과 관련하여 오류가 발생했습니다. 잠시 후 다시 시도해주세요.\"}");
         } catch (ServletException e) {
-        	throw new ServletException(this.getClass().getSimpleName() + ": 업로드 파일 크기가 너무 크거나 요청이 잘못되었습니다. -> " + e.getMessage());
+			response.getWriter().write("{\"redirectUrl\": \"/category/list/post?c=" + categoryId + "&po=" + postId + "\"}, "
+					+ "\"errorMessage\": \"서블릿과 관련하여 오류가 발생했습니다. 잠시 후 다시 시도해주세요.\"}");
         } catch (Exception e) {
-        	throw new ServletException(this.getClass().getSimpleName() + ": 파일 업로드 중 알 수 없는 오류가 발생했습니다. -> " + e.getMessage());
-        }
+			response.getWriter().write("{\"redirectUrl\": \"/category/list/post?c=" + categoryId + "&po=" + postId + "\"}, "
+					+ "\"errorMessage\": \"알 수 없는 오류가 발생했습니다. 잠시 후 다시 시도해주세요.\"}");
+        } 
 		
 		
 		

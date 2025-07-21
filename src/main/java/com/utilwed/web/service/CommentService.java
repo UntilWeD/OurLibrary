@@ -44,22 +44,22 @@ public class CommentService {
 		return savedCommentId;
 	}
 	
-	public List<Comment> getCommentList(int postId, int commentPage){
+	public List<Comment> getCommentList(int postId, int commentPage) throws SQLException{
 		return commentRepository.getCommentList(postId, commentPage);
 	}
 	
-	public boolean updateComment(int commentId, String content) {
+	public boolean updateComment(int commentId, String content) throws SQLException {
 		return commentRepository.updateComment(commentId, content);
 	}
 	
-	public int deleteComment(int commentId, int postId) throws SQLException{
-		int affectedRows = -1;
+	public boolean deleteComment(int commentId, int postId) throws SQLException{
+		boolean result = false;
 		Connection conn = null;
 		try {
 			conn = baseRepository.getConnection();
 			conn.setAutoCommit(false);
 			
-			affectedRows = commentRepository.deleteComment(commentId, conn);
+			result = commentRepository.deleteComment(commentId, conn);
 			postRepository.decrementCommentCount(postId, conn);	
 			
 			conn.commit();
@@ -71,7 +71,7 @@ public class CommentService {
 			conn.close();
 		}
 
-		return affectedRows;
+		return result;
 	}
 	
 	

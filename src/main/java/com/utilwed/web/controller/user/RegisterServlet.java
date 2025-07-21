@@ -42,8 +42,8 @@ public class RegisterServlet extends HttpServlet{
 			if(result > 0) {
 				request.getRequestDispatcher("/WEB-INF/view/main/index.jsp").forward(request, response);
 			} else {
-				request.setAttribute("message", "해당 아이디는 이미 존재하는 ID입니다.");	
-				request.getRequestDispatcher("/WEB-INF/view/main/index.jsp").forward(request, response);
+				request.setAttribute("errorMessage", "해당 계정은 이미 존재하는 계정입니다.");	
+				request.getRequestDispatcher("WEB-INF/view/error.jsp").forward(request, response);
 			}
 		} catch (SQLException e) {
 			throw new ServletException(this.getClass().getSimpleName() + ": DB와 관련하여 오류가 발생하였습니다. -> " + e.getMessage());

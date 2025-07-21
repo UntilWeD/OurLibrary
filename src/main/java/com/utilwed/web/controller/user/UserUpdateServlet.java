@@ -42,8 +42,12 @@ public class UserUpdateServlet extends HttpServlet {
 			
 			User user = new User(username, password, email, nickname);
 			
-		    userService.updateUser(userId, user);
-		    session.setAttribute("loggedInUser", username);
+		    if(userService.updateUser(userId, user)) {
+		    	session.setAttribute("loggedInUser", username);
+		    } else {
+				request.setAttribute("errorMessage", this.getClass().getSimpleName() + "계정이 올바르게 수정되지 않았습니다.");
+				request.getRequestDispatcher("WEB-INF/view/error.jsp").forward(request, response);
+		    }
 		} catch (SQLException e) {
 			throw new ServletException(this.getClass().getSimpleName() + ": DB와 관련하여 오류가 발생하였습니다. -> " + e.getMessage());
 		} catch (NullPointerException e) {

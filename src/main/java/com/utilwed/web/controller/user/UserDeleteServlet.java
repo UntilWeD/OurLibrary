@@ -45,7 +45,7 @@ public class UserDeleteServlet extends HttpServlet {
 				session.invalidate();
 				System.out.println("사용자 세션이 삭제되었습니다.");
 			} else {
-				request.setAttribute("error", "비밀번호가 틀렸습니다.");
+				request.setAttribute("errorMessage", "비밀번호가 틀리거나 오류가 생겨 정상적으로 삭제되지 않았습니다.");
 			    request.getRequestDispatcher("/WEB-INF/view/user/userDeleteForm.jsp").forward(request, response);
 			}
 		} catch (SQLException e) {

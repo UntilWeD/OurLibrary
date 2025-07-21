@@ -211,7 +211,7 @@ public class PostRepository extends BaseRepository{
 			return false;
 	}
 
-	public int deletePost(int postId, Connection conn) {
+	public boolean deletePost(int postId, Connection conn) throws SQLException {
 		String sql = "DELETE FROM post WHERE id = ?";
 
 		try (PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);){
@@ -221,17 +221,14 @@ public class PostRepository extends BaseRepository{
 			
 			int rowsAffected = pstmt.executeUpdate();
 
-			return rowsAffected;
+			return rowsAffected > 0;
 			
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
 
-		return -1;
 
 	}
 
-	public void updatePostViewCount(int postId) {
+	public void updatePostViewCount(int postId) throws SQLException{
 		String sql = "UPDATE post SET view = view + 1 WHERE id = ?";
 		
 		try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
@@ -253,7 +250,7 @@ public class PostRepository extends BaseRepository{
 		
 	}
 
-	public void updatePostCommentCount(int postId) {
+	public void updatePostCommentCount(int postId) throws SQLException{
 		String sql = "UPDATE post SET comment_count = comment_count + 1 WHERE id = ?";
 		
 		try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
@@ -274,7 +271,7 @@ public class PostRepository extends BaseRepository{
 			}
 	}
 
-	public void decrementCommentCount(int postId, Connection conn) {
+	public void decrementCommentCount(int postId, Connection conn) throws SQLException{
 		String sql = "UPDATE post SET comment_count = comment_count - 1 WHERE id = ?";
 		
 		try (PreparedStatement pstmt = conn.prepareStatement(sql);){
@@ -295,7 +292,7 @@ public class PostRepository extends BaseRepository{
 		
 	}
 
-	public void incrementLikeCount(int postId, Connection conn) {
+	public void incrementLikeCount(int postId, Connection conn) throws SQLException{
 		String sql = "UPDATE post SET like_count = like_count + 1 WHERE id = ?";
 		
 		try (PreparedStatement pstmt = conn.prepareStatement(sql);){
@@ -316,7 +313,7 @@ public class PostRepository extends BaseRepository{
 		
 	}
 	
-	public void incrementDislikeCount(int postId, Connection conn) {
+	public void incrementDislikeCount(int postId, Connection conn) throws SQLException{
 		String sql = "UPDATE post SET dislike_count = dislike_count + 1 WHERE id = ?";
 		
 		try (PreparedStatement pstmt = conn.prepareStatement(sql);){
@@ -337,7 +334,7 @@ public class PostRepository extends BaseRepository{
 		
 	}
 
-	public Map<String, Integer> getVotesCount(int postId) {
+	public Map<String, Integer> getVotesCount(int postId) throws SQLException{
 		String sql = "SELECT like_count, dislike_count FROM post WHERE id = ?";
 		try (Connection conn = getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(sql);){
@@ -356,16 +353,58 @@ public class PostRepository extends BaseRepository{
 						
 						return responseMap;
 					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				} 
 				
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			} 
 		
 		
 		return null;
+	}
+
+	public List<Post> getBestPostList() throws SQLException{
+		String sql = "SELECT * FROM post ORDER BY view DESC LIMIT 5";
+		List<Post> result = new ArrayList<>();
+		
+		try (Connection con = getConnection();
+			Statement st = con.createStatement();
+				ResultSet rs = st.executeQuery(sql);){
+			
+				while(rs.next()) {
+					int id = rs.getInt("id");
+					String title = rs.getString("title");
+					String content = rs.getString("content");
+					String nickname = rs.getString("nickname");
+					Date createdAt = rs.getTimestamp("created_at");
+					Date updatedAt = rs.getTimestamp("updated_at");
+					int likeCount = rs.getInt("like_count");
+					int dislikeCount = rs.getInt("dislike_count");
+					int view = rs.getInt("view");
+					int userId = rs.getInt("user_id");
+					int postCategoryId = rs.getInt("category_id");
+					int commentCount = rs.getInt("comment_count");
+					
+					Post post = new Post(
+								id,
+								title,
+								content,
+								nickname,
+								createdAt,
+								updatedAt,
+								likeCount,
+								dislikeCount,
+								commentCount,
+								view,
+								userId,
+								postCategoryId
+					);
+					
+					result.add(post);
+				
+			}
+
+		}
+		
+		return result;
 	}
 	
 }

@@ -46,7 +46,8 @@ public class UserProfileServlet extends HttpServlet{
 				request.getRequestDispatcher("/WEB-INF/view/user/userPage.jsp").forward(request, response);
 			} else {
 				session.invalidate();
-				response.sendRedirect("/ErrorPage");
+				request.setAttribute("errorMessage", "정상적으로 사용자 계정을 불러오지 못하였습니다.");
+			    request.getRequestDispatcher("/WEB-INF/view/user/userDeleteForm.jsp").forward(request, response);
 			}	
 			
 		} catch (SQLException e) {

@@ -26,7 +26,7 @@ public class LoginServlet extends HttpServlet{
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
-		int userId;
+		Integer userId;
 		
 		try {
 			String username = request.getParameter("username");
@@ -41,9 +41,8 @@ public class LoginServlet extends HttpServlet{
 				response.sendRedirect("/");
 				
 			} else {
-	            // 로그인 실패 시, 메시지를 request에 담아 index.jsp로 포워딩 (브라우저 주소창 유지)
-	            request.setAttribute("message", "아이디 또는 비밀번호가 올바르지 않습니다.");
-	            request.getRequestDispatcher("/WEB-INF/view/main/index.jsp").forward(request, response);
+				request.setAttribute("errorMessage", this.getClass().getSimpleName() + "아이디 또는 비밀번호가 올바르지 않습니다. ");
+				request.getRequestDispatcher("WEB-INF/view/error.jsp").forward(request, response);
 			}
 		} catch (SQLException e) {
 			throw new ServletException(this.getClass().getSimpleName() + ": DB와 관련하여 오류가 발생하였습니다. -> " + e.getMessage());

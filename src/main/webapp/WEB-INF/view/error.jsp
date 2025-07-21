@@ -7,6 +7,10 @@
 <title>Insert title here</title>
 </head>
 <body>
+	<div>
+		<h1>에러 페이지</h1>
+		<p>${errorMessage }</p>
+	</div>
 
 </body>
 </html>

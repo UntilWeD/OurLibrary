@@ -14,9 +14,11 @@ import java.util.UUID;
 import javax.servlet.http.Part;
 
 import com.utilwed.web.Entity.community.Attachment;
+import com.utilwed.web.Entity.community.Category;
 import com.utilwed.web.Entity.community.Post;
 import com.utilwed.web.repository.AttachmentRepository;
 import com.utilwed.web.repository.BaseRepository;
+import com.utilwed.web.repository.CategoryRepository;
 import com.utilwed.web.repository.PostRepository;
 
 public class PostService {
@@ -24,17 +26,23 @@ public class PostService {
 	private PostRepository postRepository;
 	private AttachmentRepository attachmentRepository;
 	private BaseRepository baseRepository;
+	private CategoryRepository categoryRepository;
+
+	
 
 	public PostService(PostRepository postRepository, AttachmentRepository attachmentRepository,
-			BaseRepository baseRepository) {
+			BaseRepository baseRepository, CategoryRepository categoryRepository) {
 		this.postRepository = postRepository;
 		this.attachmentRepository = attachmentRepository;
 		this.baseRepository = baseRepository;
+		this.categoryRepository = categoryRepository;
 	}
+
+
 
 	private final String BASE_UPLOAD_DIR = "C:/WORKSHOP/Projects/EclipseWorkSpace/OurLibrary";
 	
-	public int savePost(Post post, Collection<Part> fileParts, int categoryId) throws Exception{
+	public int savePost(Post post, Collection<Part> fileParts, int categoryId) throws SQLException, IOException{
 		
 		int postId = -1;
 		Connection conn = null;
@@ -149,7 +157,7 @@ public class PostService {
 	 * @return boolean 
 	 * @throws Exception
 	 */
-	public boolean updatePost(Post post, Collection<Part> fileParts, List<Integer> existingFileIds) throws Exception {
+	public boolean updatePost(Post post, Collection<Part> fileParts, List<Integer> existingFileIds) throws SQLException {
 
 		boolean postUpdated = false;
 		Connection conn = null;
@@ -250,10 +258,10 @@ public class PostService {
 		return postUpdated;
 	}
 
-	public int deletePost(int postId) throws Exception {
+	public boolean deletePost(int postId) throws SQLException {
 		
 		Connection conn = null;
-		int rowsEffected = -1;
+		boolean result = false;
 		
 		try {
 			conn = baseRepository.getConnection();
@@ -268,7 +276,7 @@ public class PostService {
 			// 후에 attachment를 지우는 메서드 추가
 			
 			// 3. 포스트 삭제
-			rowsEffected = postRepository.deletePost(postId, conn);
+			result = postRepository.deletePost(postId, conn);
 			
 			// 4. 물리적인 파일 및 폴더 삭제
 			String postFolderPath = BASE_UPLOAD_DIR + File.separator + "post" + File.separator + postId;
@@ -292,7 +300,7 @@ public class PostService {
 		}
 		
 		
-		return rowsEffected;
+		return result;
 	}
 	
 	private boolean deleteDirectory(File directory) {
@@ -336,8 +344,18 @@ public class PostService {
 		return false;
 	}
 	
-	public void updateView(int postId) {
+	public void updateView(int postId) throws SQLException{
 		postRepository.updatePostViewCount(postId);
+	}
+
+
+
+	public List<Post> getBestPostList() throws SQLException{
+		return postRepository.getBestPostList();
+	}
+	
+	public Category getCategoryById(int categoryId) throws SQLException{
+		return categoryRepository.getCategoryNameById(categoryId);
 	}
 	
 }

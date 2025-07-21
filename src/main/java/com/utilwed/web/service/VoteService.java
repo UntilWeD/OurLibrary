@@ -56,7 +56,7 @@ public class VoteService {
 			
 	}
 	
-	public Map<String, Integer> getVoteCount(int postId){
+	public Map<String, Integer> getVoteCount(int postId) throws SQLException{
 		return postRepository.getVotesCount(postId);
 	}
 

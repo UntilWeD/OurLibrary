@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.utilwed.web.Entity.community.Attachment;
 import com.utilwed.web.repository.AttachmentRepository;
 import com.utilwed.web.repository.BaseRepository;
+import com.utilwed.web.repository.CategoryRepository;
 import com.utilwed.web.repository.PostRepository;
 import com.utilwed.web.service.post.PostService;
 
@@ -29,8 +30,9 @@ public class PostFileDownloadServlet extends HttpServlet{
 	public void init() throws ServletException {
 		PostRepository postRepository = new PostRepository();
 		BaseRepository baseRepository = new BaseRepository();
+		CategoryRepository categoryRepository = new CategoryRepository();
 		AttachmentRepository attachmentRepository = new AttachmentRepository();
-		this.postService = new PostService(postRepository, attachmentRepository, baseRepository);
+		this.postService = new PostService(postRepository, attachmentRepository, baseRepository, categoryRepository);
 	}
 	
 	@Override
