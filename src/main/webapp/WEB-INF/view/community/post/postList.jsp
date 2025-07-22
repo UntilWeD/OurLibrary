@@ -81,9 +81,7 @@
 				<c:if test="${startNum <= 5}">
 					<span class="btn btn-prev" onclick="alert('이전 페이지가 없습니다.');"><i class="bi bi-caret-left-fill"></i></span>
 				</c:if>
-			
-				
-			
+
 			   <ul class="pagination mb-0 ">
 		       <c:forEach var="i" begin="0" end="9">
 			       <c:if test="${(startNum+i) <= lastNum}">
@@ -104,7 +102,6 @@
 				</c:if>
 			</div>	
 		</div>
-
 	</div>
 	
 	

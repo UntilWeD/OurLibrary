@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%@ include file="/WEB-INF/view/includes/header.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,42 +9,61 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<h1> 게시글 작성 폼 입니다.</h1>
-	<form method = "post" enctype="multipart/form-data">
-		<input type="hidden" name="postId" value="${po.id}" />
-		<input type="hidden" name="categoryId" value="${param.c}"/>
-		<div>
-		    <label for="title">제목:</label><br>
-        	<input type="text" id="title" name="title" required value="${po.title}" /><br><br>
-		</div>
+	<div class="container mt-5">
+		<h2 class="text-center mb-4">게시글 작성 폼</h2>
 
-        <div>
-        	<label for="content">내용:</label><br>
-        	<textarea id="content" name="content" rows="10" cols="50" required>${po.content}</textarea><br><br>
-        </div>
-        <div id="existingFilesList">
-        	<h3>기존 첨부 파일:</h3>
-		    <c:forEach var="att" items="${po.attachments}"> 
-		        <div id="file_${att.id}"> 
-		            <span>${att.originalFilename}</span>
-		            <input type="hidden" name="existingAttachmentIds" value="${att.id}"> <%-- 이 파일의 ID를 hidden 필드로 전송 --%>
-		            <button type="button" onclick="removeExistingFile(${att.id})">삭제</button>
-		            <br>
-		        </div>
-		    </c:forEach>
-		</div>
-		
-		<div>
-            <label for="file">새 첨부 파일:</label>
-            <input type="file" id="file" name="file" multiple>
-            <div id="newlySelectedFiles"></div>
-        </div>
-        
-		<button type="submit">작성 완료</button>
-	</form>
-	    <c:if test="${not empty error}">
-        <p style="color: red;">${error}</p>
-    </c:if>
+		<form method="post" enctype="multipart/form-data" class="border border-dark border-2 rounded p-4">
+			<input type="hidden" name="postId" value="${po.id}" />
+			<input type="hidden" name="categoryId" value="${param.c}" />
+
+			<!-- 제목 입력 -->
+			<div class="mb-3">
+				<label for="title" class="form-label">제목</label>
+				<input type="text" id="title" name="title" class="form-control" required value="${po.title}" />
+			</div>
+
+			<!-- 내용 입력 -->
+			<div class="mb-4">
+				<label for="content" class="form-label">내용</label>
+				<textarea id="content" name="content" rows="8" class="form-control" required>${po.content}</textarea>
+			</div>
+
+			<!-- 기존 첨부파일 목록 -->
+			<c:if test="${not empty po.attachments}">
+				<div class="mb-4">
+					<h5>기존 첨부 파일</h5>
+					<ul class="list-group">
+						<c:forEach var="att" items="${po.attachments}">
+							<li class="list-group-item d-flex justify-content-between align-items-center" id="file_${att.id}">
+								<span>${att.originalFilename}</span>
+								<div>
+									<input type="hidden" name="existingAttachmentIds" value="${att.id}">
+									<button type="button" class="btn btn-sm btn-danger" onclick="removeExistingFile(${att.id})">삭제</button>
+								</div>
+							</li>
+						</c:forEach>
+					</ul>
+				</div>
+			</c:if>
+
+			<!-- 새 첨부파일 업로드 -->
+			<div class="mb-4">
+				<label for="file" class="form-label">새 첨부 파일</label>
+				<input type="file" id="file" name="file" class="form-control" multiple>
+				<div id="newlySelectedFiles" class="form-text mt-2"></div>
+			</div>
+
+			<!-- 오류 메시지 -->
+			<c:if test="${not empty error}">
+				<p class="text-danger">${error}</p>
+			</c:if>
+
+			<!-- 작성 완료 버튼 -->
+			<div class="d-flex justify-content-end">
+				<button type="submit" class="btn btn-success">작성 완료</button>
+			</div>
+		</form>
+	</div>
 </body>
 <script src="/js/community/attachment-edit.js"></script>
 </html>

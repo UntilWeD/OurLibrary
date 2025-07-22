@@ -27,7 +27,7 @@ public class UserRepository extends BaseRepository{
 	}
 	
 	public int findUserIdByUsernameAndPassword(String username, String password) throws SQLException {
-        String sql = "SELECT id FROM user WHERE username = ? AND password = ?";
+        String sql = "SELECT id FROM user WHERE username = ? AND password = ? AND deleted = false";
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, username);
@@ -44,7 +44,7 @@ public class UserRepository extends BaseRepository{
 	
 	
 	public User findUserByUserName(String username) throws SQLException {
-		String sql = "SELECT * FROM user WHERE username = ?";
+		String sql = "SELECT * FROM user WHERE username = ? AND deleted = false";
 		try (Connection conn = getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql);){		
 			
@@ -92,12 +92,11 @@ public class UserRepository extends BaseRepository{
 	}
 	
 	public boolean deleteUser(int userId, String password) throws SQLException {
-		String sql = "DELETE FROM user WHERE id = ? AND password = ?";
+		String sql = "UPDATE user SET nickname='탈퇴한 사용자', deleted = true where id = ?";
 		try (Connection conn = getConnection();
 			 PreparedStatement pstmt = conn.prepareStatement(sql);){
 
 			pstmt.setInt(1, userId);
-			pstmt.setString(2, password);
 
 			int rowsAffected = pstmt.executeUpdate();
 			

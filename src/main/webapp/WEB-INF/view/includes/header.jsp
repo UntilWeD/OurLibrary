@@ -14,6 +14,11 @@
 <body>
 	<header>
 	  <nav class="custom-nav">
+	  	<div class="nav-item">
+	      <a class="nav-link active" href="/">
+	        <i class="bi bi-house"></i>
+	      </a>
+	    </div>
 	    <div class="nav-item">
 	      <a class="nav-link active" href="/user/profile">
 	        <i class="bi bi-person-fill"></i>

@@ -115,7 +115,7 @@ public class PostService {
 	
 	
 	
-	public List<Post> getPostList(int categoryId, String field, String query, int page){
+	public List<Post> getPostList(int categoryId, String field, String query, int page) throws SQLException{
 		return postRepository.getPostList(categoryId, field, query, page);
 	}
 	

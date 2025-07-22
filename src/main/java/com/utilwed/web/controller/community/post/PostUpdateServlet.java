@@ -61,13 +61,13 @@ public class PostUpdateServlet extends HttpServlet{
 			request.getRequestDispatcher("/WEB-INF/view/community/post/postForm.jsp")
 			.forward(request, response);
 		} catch (SQLException e) {
-			throw new ServletException(this.getClass().getSimpleName() + "DB와 관련하여 오류가 발생하였습니다." + e.getMessage());
+			throw new ServletException(this.getClass().getSimpleName() + ": DB와 관련하여 오류가 발생하였습니다." + e.getMessage());
 		} catch (NullPointerException e) {
-			throw new ServletException(this.getClass().getSimpleName() + "입력값이 비어있습니다." + e.getMessage());
+			throw new ServletException(this.getClass().getSimpleName() + ": 입력값이 비어있습니다." + e.getMessage());
 		} catch (NumberFormatException e) {
-			throw new ServletException(this.getClass().getSimpleName() + "입력값이 비어있거나 숫자변환 중 오류가 발생하였습니다."+ e.getMessage());
+			throw new ServletException(this.getClass().getSimpleName() + ": 입력값이 비어있거나 숫자변환 중 오류가 발생하였습니다."+ e.getMessage());
 		} catch (Exception e) {
-			throw new ServletException(this.getClass().getSimpleName() + "알 수 없는 오류가 발생하였습니다."+ e.getMessage());
+			throw new ServletException(this.getClass().getSimpleName() + ": 알 수 없는 오류가 발생하였습니다."+ e.getMessage());
 		}
 	}	
 	

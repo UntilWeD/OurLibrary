@@ -16,9 +16,9 @@ function enableEdit(commentId, content, postId, categoryId){
 }
 
 function cancelEdit(commentId, originalContent){
-	const commentEditButton = document.querySelector(".commentEditButton");
+	const commentEditButtons = document.querySelectorAll(".commentEditButton");
 
-	commentEditButton.forEach(button => button.style.display = "inline");
+	commentEditButtons.forEach(button => button.style.display = "inline");
 
 	
 	// 수정폼에서 일반 출력태그로 바꿈

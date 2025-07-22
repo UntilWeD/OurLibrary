@@ -47,7 +47,7 @@ public class PostRepository extends BaseRepository{
 		return -1;
 	}
 	
-	public List<Post> getPostList(int categoryId, String field, String query, int page){
+	public List<Post> getPostList(int categoryId, String field, String query, int page) throws SQLException{
 		
 		String sql = "SELECT * FROM post "
 				+ "WHERE category_id = ? AND " + field + " LIKE ? " +
@@ -60,7 +60,7 @@ public class PostRepository extends BaseRepository{
 	        throw new IllegalArgumentException("허용되지 않은 검색 필드");
 	    }
 		
-		try (Connection con = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
+		try (Connection con = getConnection();
 			PreparedStatement st = con.prepareStatement(sql);){
 		
 			st.setInt(1, categoryId);
@@ -103,9 +103,6 @@ public class PostRepository extends BaseRepository{
 				}
 			}
 
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		
 		return result;
@@ -186,8 +183,6 @@ public class PostRepository extends BaseRepository{
 				e.printStackTrace();
 			}
 		return post;
-		
-		
 	}
 
 	public boolean updatePost(Post post, Connection conn) {
@@ -216,9 +211,7 @@ public class PostRepository extends BaseRepository{
 
 		try (PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);){
 			pstmt.setInt(1, postId);
-
-			
-			
+	
 			int rowsAffected = pstmt.executeUpdate();
 
 			return rowsAffected > 0;

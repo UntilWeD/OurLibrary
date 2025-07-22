@@ -1,10 +1,12 @@
 package com.utilwed.web.repository;
 
 import java.sql.Connection;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.utilwed.web.Entity.community.Category;
 
@@ -37,6 +39,67 @@ public class CategoryRepository extends BaseRepository{
 		} 
 		return category;
 		
+	}
+
+	public List<Category> findCategoriesByQuery(String query) throws SQLException{
+		String sql = "SELECT * FROM category WHERE name LIKE ?";
+		List<Category> result = new ArrayList<Category>();
+		
+		try (Connection con = getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql);){
+				pstmt.setString(1, "%" + query + "%");
+
+				
+				try(ResultSet rs = pstmt.executeQuery();){
+					while(rs.next()) {
+						int id = rs.getInt("id");
+						int parentId = rs.getInt("parent_id");
+						String name = rs.getString("name");
+						
+						Category category = new Category(
+								id,
+								parentId,
+								name
+								);
+						
+						result.add(category);
+						
+					}
+				}
+
+			}
+			
+			return result;
+	}
+
+	public List<Category> findBigCategories() throws SQLException{
+		String sql = "SELECT * FROM category WHERE parent_id IS NULL";
+		
+		List<Category> result = new ArrayList<Category>();
+		
+		try (Connection con = getConnection();
+			Statement stmt = con.createStatement();){
+				
+				try(ResultSet rs = stmt.executeQuery(sql);){
+					while(rs.next()) {
+						int id = rs.getInt("id");
+						int parentId = rs.getInt("parent_id");
+						String name = rs.getString("name");
+						
+						Category category = new Category(
+								id,
+								parentId,
+								name
+						);
+						
+						result.add(category);
+						
+					}
+				}
+
+			}
+			
+			return result;
 	}
 	
 	
