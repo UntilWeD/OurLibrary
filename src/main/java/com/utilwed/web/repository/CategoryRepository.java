@@ -42,7 +42,7 @@ public class CategoryRepository extends BaseRepository{
 	}
 
 	public List<Category> findCategoriesByQuery(String query) throws SQLException{
-		String sql = "SELECT * FROM category WHERE name LIKE ?";
+		String sql = "SELECT * FROM category WHERE name LIKE ? LIMIT 20";
 		List<Category> result = new ArrayList<Category>();
 		
 		try (Connection con = getConnection();

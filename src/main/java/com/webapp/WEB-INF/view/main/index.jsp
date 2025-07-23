@@ -62,13 +62,15 @@
 					</div>
 				</div>
 				
-				<div class="my-5">
+				<div id="favoriteCategories" class="my-5">
 					<div class="text-center fw-bold">
 						<h2>자주 가는 카테고리들</h2>
 					</div>
 					<hr class="border border-dark border-2 opacity-50 mb-4">
-					<div id="favoriteCategoriesList" class="d-flex flex-wrap gap-2 justify-content-center p-3">
-						<!-- 자바스크립트로부터 불러옴 -->
+					<div class="d-flex flex-wrap gap-2 justify-content-center p-3">
+					  <a href="/category/1" class="btn btn-outline-primary rounded-pill px-3">IT 뉴스</a>
+					  <a href="/category/2" class="btn btn-outline-success rounded-pill px-3">게임</a>
+					  <a href="/category/3" class="btn btn-outline-danger rounded-pill px-3">운동</a>
 					</div>
 				</div>
 		
@@ -114,6 +116,6 @@
 	</c:choose>
 		
 	</div>
-	<script src="/js/community/get-favorite-category.js"></script>
+
 </body>
 </html>

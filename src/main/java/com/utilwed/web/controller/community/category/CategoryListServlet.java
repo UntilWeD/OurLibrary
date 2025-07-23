@@ -1,6 +1,7 @@
 package com.utilwed.web.controller.community.category;
 
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -49,14 +50,21 @@ public class CategoryListServlet extends HttpServlet{
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("application/json;charset=UTF-8");
 		try {
+			System.out.println("=== 모든 파라미터 확인 ===");
+		    Enumeration<String> params = request.getParameterNames();
+		    while(params.hasMoreElements()) {
+		        String paramName = params.nextElement();
+		        String paramValue = request.getParameter(paramName);
+		        System.out.println(paramName + " = " + paramValue);
+		    }
 			String query_ =  request.getParameter("query");
 			
-			String query = "";
+			String query = ";";
 			if(query_ != null && !query_.equals(""))
 				query = query_;
 			
 			List<Category> foundedCategories = categoryService.getCategoryListByQuery(query);
-			
+			System.out.println(foundedCategories);
 				
 			Gson gson = new Gson();
 			
