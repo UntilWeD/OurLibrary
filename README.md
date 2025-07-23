@@ -34,134 +34,139 @@
 <br/>
 <br/>
 1) 유저 관리는 세션으로 클라이언트가 로그인하지 않았다면 로그인화면, 했다면 웹사이트의 홈화면을 보여줍니다.
-- 로그인 전 
+- 로그인 전 <br/>
 <img width="2095" height="1757" alt="Image" src="https://github.com/user-attachments/assets/f88c165a-685c-477a-9cf1-b409986750cc" />
 <br/>
 <br/>
-- 로그인 후
+- 로그인 후<br/>
 <img width="3070" height="1942" alt="Image" src="https://github.com/user-attachments/assets/62744231-c292-433e-8278-a17f7c5f045f" />
 <br/>
 <br/>
 <br/>
 2) 유저는 이외에도 로그아웃, 유저정보 수정, 회원탈퇴 등 여러 기본적인 기능을 사용할 수 있습니다. 
--회원가입
+-회원가입 <br/>
 <img width="1622" height="1547" alt="Image" src="https://github.com/user-attachments/assets/aee534c4-2e67-4739-8b03-b32c8315937b" />
 <br/>
 <br/>
--유저정보 수정
+-유저정보 수정 <br/>
 <img width="3130" height="1742" alt="Image" src="https://github.com/user-attachments/assets/31c54b23-2ee5-42e8-a005-ca299655e284" />
 <br/>
 <br/>
--회원탈퇴 
+-회원탈퇴 <br/>
 <img width="1715" height="1110" alt="Image" src="https://github.com/user-attachments/assets/f1e8ff3b-1c0a-4eec-8571-004129a8a0e6" />
 <br/>
 <br/>
 <br/>
+
 ### 커뮤니티
-#### 카테고리
+<br/>
+#### 카테고리 <br/>
 1) 기본적으로 큰 카테고리들이 나오고, 이를 부모로 삼는 카테고리들이 존재합니다. 이러한 많은 카테고리들이 있기에 검색어를 사용하여 검색할 수 있습니다.
+<br/>
 2) 이런식으로 카테고리로 들어간다면 유저가 이동한 카테고리 정보를 로컬스토리지에 저장하고 이를 바탕으로 자주 가는 카테고리에서 로컬스토리지로부터 값을 꺼내 볼 수 있습니다.
 <br/>
 <br/>
 <br/>
 1) 기본적으로 큰 카테고리들이 나오고, 이를 부모로 삼는 카테고리들이 존재합니다. 이러한 많은 카테고리들이 있기에 검색어를 사용하여 검색할 수 있습니다.
 <br/>
--카테고리 홈
+-카테고리 홈 <br/>
 <img width="2305" height="1792" alt="카테고리홈" src="https://github.com/user-attachments/assets/ad34bade-f668-41d1-a150-1481cb506c06" />
 <br/>
 <br/>
--카테고리 검색
+-카테고리 검색 <br/>
 <img width="2260" height="1702" alt="카테고리검색" src="https://github.com/user-attachments/assets/19a586d7-3d69-460d-8869-dd099d965a92" />
 <br/>
 <br/>
 <br/>
-2) 이런식으로 카테고리로 들어간다면 유저가 이동한 카테고리 정보를 로컬스토리지에 저장하고 이를 바탕으로 자주 가는 카테고리에서 로컬스토리지로부터 값을 꺼내 볼 수 있습니다.
-- 카테고리 홈에서 이동
+2) 이런식으로 카테고리로 들어간다면 유저가 이동한 카테고리 정보를 로컬스토리지에 저장하고 이를 바탕으로 자주 가는 카테고리에서 로컬스토리지로부터 값을 꺼내 볼 수 있습니다.<br/>
+- 카테고리 홈에서 이동 <br/>
 <img width="2352" height="965" alt="카테고리이동_1" src="https://github.com/user-attachments/assets/b10238a7-b6d3-4f09-92c2-4378132958c3" />
 <br/>
 <br/>
-- 메인 홈에서 출력 (카테고리이름 - 카테고리 조회횟수)
+- 메인 홈에서 출력 (카테고리이름 - 카테고리 조회횟수) <br/>
 <img width="1520" height="322" alt="카테고리이동_2" src="https://github.com/user-attachments/assets/78cc1949-5f2e-446b-8b00-ab7222bbaed1" />
 <br/>
 <br/>
 <br/>
-#### 게시글
-1) 글들을 리스트로 확인할 수 있고 20개가 넘어간다면 다음 페이지를 보여줍니다. 
-2) 제목과 작성자에 따라 게시글을 검색할 수 있습니다. 
-3) 사용자는 게시글을 작성할 수 있고 현재 로그인한 계정이 작성한 포스트만 수정 및 삭제할 수 있습니다. 
-4) 게시글에는 파일을 올릴 수 있고 이 파일들은 다른 사용자들이 다운로드 할 수 있습니다.
-5) 파일들은 uuid를 사용해서 다른 이름으로 저장되고 각 포스트 id로 구분되어 저장됩니다. 
+#### 게시글 <br/>
+
+1) 글들을 리스트로 확인할 수 있고 20개가 넘어간다면 다음 페이지를 보여줍니다. <br/>
+2) 제목과 작성자에 따라 게시글을 검색할 수 있습니다. <br/>
+3) 사용자는 게시글을 작성할 수 있고 현재 로그인한 계정이 작성한 포스트만 수정 및 삭제할 수 있습니다. <br/>
+4) 게시글에는 파일을 올릴 수 있고 이 파일들은 다른 사용자들이 다운로드 할 수 있습니다.<br/>
+5) 파일들은 uuid를 사용해서 다른 이름으로 저장되고 각 포스트 id로 구분되어 저장됩니다. <br/>
 <br/>
 <br/>
 <br/>
 
 
-1) 글들을 리스트로 확인할 수 있고 20개가 넘어간다면 다음 페이지를 보여줍니다. 
+1) 글들을 리스트로 확인할 수 있고 20개가 넘어간다면 다음 페이지를 보여줍니다. <br/>
 <img width="2432" height="1997" alt="게시글리스트" src="https://github.com/user-attachments/assets/1bfe9bb0-cfb9-41ee-bbce-79c24dfbd6da" />
 <br/>
 <br/>
-2) 제목과 작성자에 따라 게시글을 검색할 수 있습니다. 
+2) 제목과 작성자에 따라 게시글을 검색할 수 있습니다. <br/>
 <img width="2385" height="992" alt="게시글동적검색" src="https://github.com/user-attachments/assets/582f0d7b-1294-4317-881e-0aef67d71bec" />
 <br/>
 <br/>
 
-3) 사용자는 게시글을 작성할 수 있고 현재 로그인한 계정이 작성한 포스트만 수정 및 삭제할 수 있습니다. 
+3) 사용자는 게시글을 작성할 수 있고 현재 로그인한 계정이 작성한 포스트만 수정 및 삭제할 수 있습니다.  <br/>
 <img width="2440" height="1525" alt="게시글수정삭제" src="https://github.com/user-attachments/assets/ecbb70e1-2565-4d46-82ef-082ed8ffc35a" />
 <br/>
 <br/>
-- 기존에 올라와있는 파일 수정 및 삭제 가능
+- 기존에 올라와있는 파일 수정 및 삭제 가능 <br/>
 <img width="2302" height="1682" alt="게시글파일수정" src="https://github.com/user-attachments/assets/c1913313-006e-48d4-b4a5-8565e92f1b46" />
 <br/>
 <br/>
-4) 게시글에는 파일을 올릴 수 있고 이 파일들은 다른 사용자들이 다운로드 할 수 있습니다.
-- 수정 중 파일업로드
+4) 게시글에는 파일을 올릴 수 있고 이 파일들은 다른 사용자들이 다운로드 할 수 있습니다. <br/>
+- 수정 중 파일업로드 <br/>
 <img width="2455" height="1525" alt="게시글파일업로드" src="https://github.com/user-attachments/assets/a5bf6f4d-b870-4af2-8270-87ad218d7bcf" />
 <br/>
 <br/>
-- 파일 다운로드 
+- 파일 다운로드  <br/>
 <img width="2405" height="1150" alt="게시글파일다운" src="https://github.com/user-attachments/assets/54cfa192-56b9-4547-97b0-aaae397ffdf5" />
 <br/>
 <br/>
 <br/>
-5) 파일들은 uuid를 사용해서 다른 이름으로 저장되고 각 포스트 id로 구분되어 저장됩니다. 
+5) 파일들은 uuid를 사용해서 다른 이름으로 저장되고 각 포스트 id로 구분되어 저장됩니다.  <br/>
 <img width="1695" height="870" alt="게시글물리파일저장" src="https://github.com/user-attachments/assets/7f0ebcdb-6aa9-46db-ba1e-4c9e312af6b0" />
 <br/>
 <br/>
-#### 댓글
-1) 게시글마다 각 댓글이 있고 사용자는 해당 게시글에 대하여 작성 할 수 있습니다.
+#### 댓글 <br/>
+1) 게시글마다 각 댓글이 있고 사용자는 해당 게시글에 대하여 작성 할 수 있습니다. <br/>
 2) 사용자는 현재 로그인한 계정의 id와 작성된 댓글의 id를 비교하여 수정 및 삭제를 할 수 있습니다.
 <br/>
 <br/>
-1) 게시글마다 각 댓글이 있고 사용자는 해당 게시글에 대하여 작성 할 수 있습니다.
+1) 게시글마다 각 댓글이 있고 사용자는 해당 게시글에 대하여 작성 할 수 있습니다. <br/>
 
-- 댓글 작성전
+- 댓글 작성전 <br/>
 <img width="2420" height="1647" alt="댓글작성_1" src="https://github.com/user-attachments/assets/df17d930-de33-414e-82b8-5d5349dfa5df" />
 <br/>
 <br/>
-- 댓글 작성 후
+- 댓글 작성 후 <br/>
 <img width="2465" height="1965" alt="댓글작성_2" src="https://github.com/user-attachments/assets/02334a12-c53c-4c48-aeb7-33d84b3bcaa5" />
 <br/>
 <br/>
-- 댓글 페이지
+- 댓글 페이지 <br/>
 <img width="2347" height="1407" alt="댓글페이지" src="https://github.com/user-attachments/assets/fd26dae2-d511-4b27-9eba-a1f33b74ba1d" />
 <br/>
 <br/>
 <br/>
 
 
-2) 사용자는 현재 로그인한 계정의 id와 작성된 댓글의 id를 비교하여 수정 및 삭제를 할 수 있습니다.
+2) 사용자는 현재 로그인한 계정의 id와 작성된 댓글의 id를 비교하여 수정 및 삭제를 할 수 있습니다. <br/>
 
--댓글수정
+-댓글수정 <br/>
 <img width="2305" height="685" alt="댓글수정" src="https://github.com/user-attachments/assets/497c2ee3-d6b8-4832-b2af-3028626f323c" />
 <br/>
 <br/>
 <br/>
-#### 좋아요
-1) 사용자는 하루마다 한 게시글에 좋아요 및 싫어요를 누를 수 있습니다. 
+#### 좋아요 <br/>
+
+1) 사용자는 하루마다 한 게시글에 좋아요 및 싫어요를 누를 수 있습니다. <br/>
 <br/>
 <br/>
 
-1) 사용자는 하루마다 한 게시글에 좋아요 및 싫어요를 누를 수 있습니다. 
+1) 사용자는 하루마다 한 게시글에 좋아요 및 싫어요를 누를 수 있습니다. <br/>
 <img width="2297" height="1730" alt="게시글좋아요" src="https://github.com/user-attachments/assets/7100de8a-632f-45ae-a4af-230503464d6b" />
 <br/>
 <br/>
